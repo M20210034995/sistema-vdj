@@ -3,10 +3,12 @@
 Protótipo clicável para iPad (retrato) do avaliador de ouro da **Valor da Joia**.
 Sem back-end: o preço do grama do ouro fica no arquivo `preco-ouro-24k.txt`, que a página lê pela API do GitHub.
 
-- `prototipo-v4.html` — o protótipo principal. Abra por um servidor local (ex.: `python3 -m http.server 8765`) e acesse `http://localhost:8765/prototipo-v4.html`. Rodando local, o preço vem do `preco-ouro-24k.txt` desta pasta.
+Publicado em **https://m20210034995.github.io/sistema-vdj/** (GitHub Pages, a partir do branch `main`).
+
+- `index.html` — o app. Para rodar no computador, abra um servidor local nesta pasta (ex.: `python3 -m http.server 8765`) e acesse `http://localhost:8765/`. Rodando local, o preço vem do `preco-ouro-24k.txt` desta pasta.
 - `preco-ouro-24k.txt` — o preço do grama do ouro 24k, em reais.
-- `loading-opcoes.html`, `dourados.html`, `fluxo-*.html`, `ideias-v2.html` — explorações de design.
-- `logo-transparente.png` — logo usado no protótipo.
+- `logo-transparente.png` — logo usado no app.
+- `design/` — explorações de design (pranchas com as opções avaliadas) e as fontes do logo.
 
 ## Como mudar o preço do ouro
 
