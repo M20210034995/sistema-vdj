@@ -185,6 +185,103 @@
   .rlines{width:100%}
   .rline{display:flex;align-items:center;gap:16px;padding:22px 0;border-bottom:1px solid var(--linha);font-size:20px}
   .rline .v{margin-left:auto;font-weight:600;font-family:var(--num);font-variant-numeric:tabular-nums}
+
+  /* ---- Celular (e janelas estreitas): tudo abaixo do iPad mini em pé (744 px). O tablet não usa nada daqui. ----
+     Cada regra repete o seletor de cima (inclusive os com id) para vencer por vir depois.
+     743.98 e não 743: com zoom, a largura pode ser fracionária. */
+  @media (max-width: 743.98px){
+    :root{--pad:clamp(16px,5vw,40px)}   /* margem lateral, no lugar dos 64/70 px do tablet */
+    /* se algo vazar para o lado, a página não cresce: no Chrome do Android, crescer tira da tela o teclado, o rodapé e as folhas */
+    .app{overflow-x:clip}
+
+    /* cabeçalho */
+    .appbar, #v-single .appbar, #v-result .appbar{height:calc(64px + env(safe-area-inset-top));padding:env(safe-area-inset-top) var(--pad) 0}
+    .logo-img{height:34px}
+    .corner{height:40px;padding:0 14px;gap:6px;font-size:15px}
+    .corner .g{font-size:19px}
+    /* várias joias: logo à esquerda e "Uma joia" à direita, no mesmo lugar do "Várias joias" */
+    #v-multi .appbar{justify-content:space-between;flex-direction:row-reverse}
+    .corner.l{position:static;transform:none;flex-shrink:0}
+
+    /* uma joia */
+    #v-single .body{padding:4px var(--pad) 12px}
+    #single-form{gap:12px}   /* espaço mínimo entre as perguntas quando a tela é baixa e o space-evenly não tem o que distribuir */
+    .q-head{gap:10px}
+    #single-form .q-head{margin-bottom:12px}
+    .num{width:30px;height:30px;font-size:15px;flex-shrink:0}
+    .q-title{font-size:18px}
+    .outro-pill{height:40px;padding:0 14px 0 16px;gap:8px;font-size:15px;flex-shrink:0}
+    .chips, #single-form .chips{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .chip{font-size:15px;border-radius:14px}
+    .chip.small{height:60px}
+    #single-form .chip, #single-form .chip.small{height:84px;border-radius:16px;font-size:15px;gap:6px}
+    #single-form .chip svg{width:28px;height:28px}
+    /* peso numa linha própria, centralizado; input e brilho na mesma regra para não desalinharem */
+    .peso-row{flex-wrap:wrap;row-gap:4px}
+    .peso-row .wbox{width:100%;margin-left:0;justify-content:center}
+    #single-form .wbox input, #single-form .wglow{font-size:min(19vw,96px)}
+    #single-form .wbox .u{font-size:min(9.5vw,48px)}
+    .wbox.sm input, .wbox.sm .wglow{font-size:min(16vw,64px)}
+    .wbox.sm .u{font-size:min(8vw,32px)}
+    .whint{font-size:14px}
+
+    /* rodapé */
+    .footer{padding:12px var(--pad) calc(16px + env(safe-area-inset-bottom));gap:16px}
+    #v-single .footer{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+    /* com o teclado aberto, o rodapé fica em cima dele: não precisa da folga da safe area */
+    html.kp-on .footer, html.kp-on #v-single .footer{padding-bottom:12px}
+    .btn{height:64px;border-radius:22px;font-size:19px;gap:10px}
+    .btn .g{font-size:22px}
+    .progress{font-size:15px}
+
+    /* teclado próprio, menor (abrirTeclado lê a altura real) */
+    .kp{padding:4px var(--pad) calc(12px + env(safe-area-inset-bottom));border-radius:22px 22px 0 0}
+    .kp-top{height:44px}
+    .kp-ok{font-size:17px}
+    .kp-grid{gap:8px}
+    .kp-key{height:56px;border-radius:14px;font-size:28px;touch-action:manipulation}   /* sem zoom no toque duplo */
+    .kp-key svg{width:30px;height:22px}
+
+    /* várias joias */
+    .body{padding:16px var(--pad) 20px}
+    .h1{font-size:38px}
+    .list{margin-top:18px;gap:12px}
+    .jcard{padding:16px 14px;border-radius:16px}
+    /* cartão fechado: resumo numa linha própria, abaixo de "Joia N"; Editar e Remover juntos à direita */
+    .jrow{gap:10px;font-size:17px;flex-wrap:wrap;row-gap:4px}
+    .jrow .s{order:1;flex-basis:100%;padding-left:40px}
+    .jrow .e{font-size:15px}
+    .jrow .e + .e{margin-left:0}
+    .check, .numc{width:30px;height:30px;font-size:15px}
+    .mini-lbl{font-size:16px;margin:16px 0 10px}
+    .add{height:60px;font-size:17px}
+    .add span{font-size:24px}
+
+    /* resultado */
+    .center{padding:0 var(--pad);gap:28px}
+    .result-label{font-size:13px;letter-spacing:.22em}
+    .value{font-size:min(19vw,112px);gap:8px}
+    .value small{font-size:.36em;margin-top:.35em}   /* mesma proporção dos 40/14 px do tablet */
+    .pbar{width:100%;max-width:440px}
+
+    /* roda do "Outro" e aviso */
+    .sheet{padding:12px var(--pad) calc(24px + env(safe-area-inset-bottom));border-radius:24px 24px 0 0}
+    .sheet-top{height:52px}
+    .sheet-title{font-size:18px}
+    .sheet-btn{font-size:17px;padding:10px 4px}
+    .wheel{height:280px;margin-top:8px}   /* 5 linhas de 56 px; o ITEM de abrirRoda lê a altura do .wi */
+    .wheel .band{top:112px;height:56px;border-radius:16px}
+    .wheel-scroll{padding:112px 0}
+    .wi{height:56px;font-size:26px}
+    .sheet-clear{margin-top:14px;font-size:16px}
+    /* aviso: título em cima, texto no meio, botões embaixo (na linha do topo o título quebrava em 3 linhas) */
+    .sheet[role=alertdialog]{display:grid;grid-template-columns:1fr 1fr}
+    .sheet[role=alertdialog] .sheet-top{display:contents}
+    .sheet[role=alertdialog] .sheet-title{grid-area:1/1/2/3;text-align:center;padding-top:8px}
+    .sheet[role=alertdialog] .sheet-msg{grid-area:2/1/3/3;font-size:16px;margin:10px auto 14px}
+    .sheet[role=alertdialog] [data-x]{grid-area:3/1;justify-self:start}
+    .sheet[role=alertdialog] [data-ok]{grid-area:3/2;justify-self:end}
+  }
 </style>
 </head>
 <body>
@@ -280,7 +377,6 @@ const OUTROS = {
 
 // Roda de seleção em tela cheia, no estilo do seletor de data do iOS.
 function abrirRoda({titulo, opcoes, atual, escolher}){
-  const ITEM = 80;
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = `<div class="sheet" role="dialog" aria-label="${titulo}">
@@ -290,6 +386,7 @@ function abrirRoda({titulo, opcoes, atual, escolher}){
   </div>`;
   document.body.appendChild(bg);
   const sc = bg.querySelector('.wheel-scroll'), itens = [...sc.children];
+  const ITEM = itens[0].offsetHeight;   // altura de um item, vinda do CSS (80 px no tablet, 56 no celular); offsetHeight ignora o rotateX de gira()
   const gira = () => {
     const c = sc.scrollTop / ITEM;
     itens.forEach((it, i) => {
@@ -464,6 +561,18 @@ function show(id){
   window.scrollTo(0,0);
 }
 
+// Mede de novo o que depende do tamanho da tela ou da fonte:
+// - o campo de peso: no celular, a fonte depende da largura (girar, redimensionar) e, no Android, o Inter dos números chega depois do primeiro desenho;
+// - a altura do teclado aberto: no iPhone, a safe area de baixo muda quando a barra do Safari recolhe.
+// Só o campo da tela visível: numa tela escondida a medição dá 0 (as outras telas são remontadas quando aparecem).
+function remedir(){
+  document.querySelectorAll('.view.on .wbox input').forEach(i => i.dispatchEvent(new Event('input')));   // o handler do campo chama ajusta()
+  if(teclado?.classList.contains('on')) document.documentElement.style.setProperty('--kp', teclado.offsetHeight + 'px');
+}
+addEventListener('resize', remedir);
+window.visualViewport?.addEventListener('resize', remedir);
+document.fonts?.addEventListener('loadingdone', remedir);
+
 // ---- uma joia ----
 function renderSingle(){
   form($('single-form'), single, false, atualizaSingle);
@@ -546,8 +655,8 @@ async function lerPreco(){
 }
 
 const AVISOS = {
-  conexao:  {titulo: 'Sistema fora do ar', texto: () => 'Não foi possível consultar o preço do ouro. Confira a internet do tablet e tente de novo.'},
-  limite:   {titulo: 'Limite de consultas atingido', texto: min => `Esta internet passou do limite de consultas por hora. Tente de novo ${min ? `em ${min} min` : 'daqui a pouco'} ou conecte o tablet a outra internet, como a do celular.`},
+  conexao:  {titulo: 'Sistema fora do ar', texto: () => 'Não foi possível consultar o preço do ouro. Confira a internet e tente de novo.'},
+  limite:   {titulo: 'Limite de consultas atingido', texto: min => `Esta internet passou do limite de consultas por hora. Tente de novo ${min ? `em ${min} min` : 'daqui a pouco'} ou use outra internet, como outro Wi-Fi ou os dados do celular.`},
   invalido: {titulo: 'Preço do ouro inválido', texto: () => 'O preço cadastrado não está num formato que o sistema entenda. Avise o responsável.'},
 };
 // Aviso de bloqueio, na mesma folha de baixo para cima da roda de seleção (abrirRoda).
@@ -626,7 +735,8 @@ $('to-multi').addEventListener('click', () => {
 });
 $('to-single').addEventListener('click', () => {
   single = multi[0] || novaJoia();
-  renderSingle(); show('v-single');
+  // mostra antes de montar: com a tela escondida, ajusta() mede 0 e o peso já digitado ficaria com 6 px
+  show('v-single'); renderSingle();
 });
 $('single-go').addEventListener('click', () => pedirAvaliacao([single], $('single-go')));
 $('multi-go').addEventListener('click', () => pedirAvaliacao(multi, $('multi-go')));
