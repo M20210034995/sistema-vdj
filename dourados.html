@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valor da Joia — Opções de dourado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#0E0E0E; --fundo:#F3F1EC; --superficie:#F9F8F5; --linha:#E4E2DD; --texto2:#6B6B6B;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'Inter', system-ui, sans-serif;
+    --num:-apple-system, 'SF Pro Display', BlinkMacSystemFont, 'Inter', sans-serif;
+    --sombra-1:0 1px 2px rgba(30,25,15,.06), 0 2px 6px rgba(30,25,15,.05);
+    --sombra-2:0 2px 4px rgba(30,25,15,.08), 0 10px 24px rgba(30,25,15,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--fundo);font-family:var(--sans);color:var(--preto);padding:48px 24px 80px}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-family:var(--serif);font-size:42px;font-weight:500}
+  .sub{color:var(--texto2);font-size:15px;line-height:1.55;margin-top:8px;max-width:760px}
+  .atual{display:inline-flex;align-items:center;gap:10px;margin-top:18px;font-size:13px;color:var(--texto2)}
+  .atual span{width:22px;height:22px;border-radius:6px;background:#B8955A}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;margin-top:36px}
+
+  .card{background:var(--superficie);border-radius:20px;box-shadow:var(--sombra-1);overflow:hidden;display:flex;flex-direction:column}
+  .swatch{height:150px;background:var(--metal);position:relative}
+  .swatch .flat{position:absolute;right:14px;bottom:14px;width:42px;height:42px;border-radius:10px;background:var(--g);border:2px solid rgba(255,255,255,.7)}
+  .letter{position:absolute;left:18px;top:14px;font-family:var(--serif);font-size:40px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.25)}
+  .info{padding:18px 20px 6px}
+  .name{font-family:var(--serif);font-size:26px;font-weight:500}
+  .hex{font-size:12px;color:var(--texto2);margin-top:4px;font-family:var(--num);letter-spacing:.02em}
+  .desc{font-size:13.5px;line-height:1.5;color:#333;margin-top:8px}
+
+  .demo{padding:18px 20px 22px;display:flex;flex-direction:column;gap:16px;border-top:1px solid var(--linha);margin-top:14px}
+  .logo{font-family:var(--serif);font-size:15px;letter-spacing:.3em;display:flex;align-items:center;gap:10px;justify-content:center}
+  .logo i{display:block;width:22px;height:1.5px;background:var(--metal-h)}
+  .row{display:flex;align-items:center;gap:12px}
+  .check{width:30px;height:30px;border-radius:50%;background:var(--metal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.2);flex-shrink:0}
+  .q{font-size:15px;font-weight:600}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chip{height:70px;border-radius:12px;border:1.5px solid var(--linha);background:var(--superficie);box-shadow:var(--sombra-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:14px}
+  .chip.sel{background:#fff;border-color:var(--preto);font-weight:600;box-shadow:var(--sombra-2);transform:translateY(-2px)}
+  .chip svg{width:24px;height:24px;fill:none;stroke-width:1.5;stroke:var(--preto)}
+  .chip.sel svg{stroke:var(--g)}
+  .btn{height:56px;border-radius:12px;background:var(--preto);color:#fff;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:var(--sombra-2)}
+  .btn b{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:20px}
+  .result{display:flex;align-items:center;justify-content:space-between}
+  .ring{width:54px;height:54px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin 1.4s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .val{text-align:right}
+  .val small{display:block;font-size:10px;letter-spacing:.2em;color:var(--texto2);font-weight:600}
+  .val div{font-family:var(--num);font-weight:600;font-size:30px;letter-spacing:-.02em}
+  .rule{height:2px;width:60px;background:var(--metal-h);margin:6px 0 0 auto}
+</style>
+</head>
+<body><div class="wrap">
+  <h1>Escolha o dourado</h1>
+  <p class="sub">Quatro dourados “de ouro de verdade”, cada um aplicado nos pontos onde o dourado aparece no app: filetes do logo, checks, ícone selecionado, seta do botão, carregamento e filete do resultado. O quadradinho no canto da faixa é a cor chapada; a faixa é a versão metálica (degradê), que dá o brilho de metal.</p>
+  <div class="atual"><span></span>Atual (#B8955A), o “mostarda”, para comparar</div>
+
+  <div class="grid">
+    <!-- A -->
+    <div class="card" style="--g:#D4AF37;--gl:#F1E2AE;--metal:linear-gradient(135deg,#F3DC8C 0%,#D4AF37 45%,#A8841F 80%,#E9CC6A 100%);--metal-h:linear-gradient(90deg,#A8841F,#F3DC8C,#A8841F)">
+      <div class="swatch"><div class="letter">A</div><div class="flat"></div></div>
+      <div class="info"><div class="name">Ouro metálico</div><div class="hex">#D4AF37 · claro #F3DC8C · escuro #A8841F</div><div class="desc">O dourado clássico de joalheria. Amarelo, luminoso, equilibrado.</div></div>
+      <div class="demo"></div>
+    </div>
+    <!-- B -->
+    <div class="card" style="--g:#C9962A;--gl:#EFD9A6;--metal:linear-gradient(135deg,#EDCB72 0%,#C9962A 45%,#8F6914 80%,#DDB453 100%);--metal-h:linear-gradient(90deg,#8F6914,#EDCB72,#8F6914)">
+      <div class="swatch"><div class="letter">B</div><div class="flat"></div></div>
+      <div class="info"><div class="name">Ouro 18k</div><div class="hex">#C9962A · claro #EDCB72 · escuro #8F6914</div><div class="desc">Mais quente e profundo, puxado para o laranja do ouro amarelo 18k.</div></div>
+      <div class="demo"></div>
+    </div>
+    <!-- C -->
+    <div class="card" style="--g:#CBA862;--gl:#EFE2C4;--metal:linear-gradient(135deg,#F2E3BC 0%,#CBA862 45%,#9E7F3E 80%,#E3CB93 100%);--metal-h:linear-gradient(90deg,#9E7F3E,#F2E3BC,#9E7F3E)">
+      <div class="swatch"><div class="letter">C</div><div class="flat"></div></div>
+      <div class="info"><div class="name">Ouro champagne</div><div class="hex">#CBA862 · claro #F2E3BC · escuro #9E7F3E</div><div class="desc">Mais suave e sofisticado, combina com o off-white sem gritar.</div></div>
+      <div class="demo"></div>
+    </div>
+    <!-- D -->
+    <div class="card" style="--g:#D9AE48;--gl:#F3E3B5;--metal:linear-gradient(135deg,#FCEABB 0%,#E8C164 25%,#B8862A 50%,#F7DC8F 72%,#C4952F 100%);--metal-h:linear-gradient(90deg,#B8862A,#FCEABB,#C4952F,#FCEABB,#B8862A)">
+      <div class="swatch"><div class="letter">D</div><div class="flat"></div></div>
+      <div class="info"><div class="name">Ouro polido</div><div class="hex">#D9AE48 · brilhos #FCEABB / #F7DC8F · sombra #B8862A</div><div class="desc">O mais “metal”: degradê com reflexos, como uma peça polida sob luz.</div></div>
+      <div class="demo"></div>
+    </div>
+  </div>
+</div>
+
+<template id="demo">
+  <div class="logo"><i></i>VALOR DA JOIA<i></i></div>
+  <div class="row"><span class="check">✓</span><span class="q">Tipo de peça</span></div>
+  <div class="chips">
+    <div class="chip sel"><svg viewBox="0 0 36 36"><circle cx="18" cy="21" r="10"/><path d="M13 9l5-5 5 5-5 3z"/></svg>Anel</div>
+    <div class="chip"><svg viewBox="0 0 36 36"><path d="M6 6c0 14 6 20 12 20s12-6 12-20"/><circle cx="18" cy="29" r="3"/></svg>Colar</div>
+  </div>
+  <div class="btn">Avaliar joia <b>→</b></div>
+  <div class="result">
+    <div class="ring"></div>
+    <div class="val"><small>VALOR ESTIMADO</small><div>R$ 5.180</div><div class="rule"></div></div>
+  </div>
+</template>
+<script>
+  const t = document.getElementById('demo');
+  document.querySelectorAll('.demo').forEach(d => d.appendChild(t.content.cloneNode(true)));
+</script>
+</body>
+</html>

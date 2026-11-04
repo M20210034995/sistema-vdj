@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Valor da Joia — Protótipo v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#0E0E0E; --branco:#FFFFFF; --off:#F7F6F3; --linha:#E4E2DD;
+    --texto2:#6B6B6B; --ouro:#D9AE48; --ouro-claro:#F3E3B5; --ouro-escuro:#B8862A;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'Inter', system-ui, sans-serif;
+    --fundo:#F3F1EC; --superficie:#F9F8F5;
+    /* profundidade: 1 = levantado, 2 = à frente */
+    --sombra-1:0 1px 2px rgba(30,25,15,.06), 0 2px 6px rgba(30,25,15,.05);
+    --sombra-2:0 2px 4px rgba(30,25,15,.08), 0 10px 24px rgba(30,25,15,.12);
+    --num:-apple-system, 'SF Pro Display', BlinkMacSystemFont, 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--fundo)}
+  body{font-family:var(--sans);color:var(--preto);-webkit-user-select:none;user-select:none}
+  .app{max-width:820px;min-height:100vh;min-height:100dvh;margin:0 auto;background:var(--fundo);display:flex;flex-direction:column}
+  .view{display:none;flex:1;flex-direction:column}
+  .view.on{display:flex}
+
+  .appbar{height:88px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--linha);position:relative;padding-top:env(safe-area-inset-top)}
+  .logo{font-family:var(--serif);font-size:28px;letter-spacing:.32em;font-weight:500;display:flex;align-items:center;gap:18px}
+  .logo-img{height:44px;width:auto;display:block}
+  .logo i{display:block;width:28px;height:1.5px;background:var(--ouro)}
+  .corner{position:absolute;top:50%;transform:translateY(-50%);height:48px;padding:0 18px;border:1.5px solid var(--linha);border-radius:999px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:#333;background:var(--superficie);box-shadow:var(--sombra-1);font-family:var(--sans);cursor:pointer}
+  .corner.r{right:24px}
+  .corner.pill{position:static;transform:none;flex-shrink:0}
+  .title-row{display:flex;align-items:center;justify-content:flex-end;gap:20px}
+  .corner.l{left:24px}
+  .corner .g{color:var(--ouro);font-size:22px;line-height:1}
+
+  .body{padding:44px 64px 32px;flex:1;display:flex;flex-direction:column}
+  .h1{font-family:var(--serif);font-size:54px;font-weight:500;line-height:1.05}
+  .q{margin-top:38px}
+  .q-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .num{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--linha);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;color:var(--texto2);transition:.2s}
+  .num.done{background:var(--ouro);border-color:transparent;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.2)}
+  .q-title{font-size:22px;font-weight:600}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .chip{height:100px;border:1.5px solid var(--linha);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:19px;font-weight:500;background:var(--superficie);color:var(--preto);font-family:var(--sans);cursor:pointer;box-shadow:var(--sombra-1);transition:background .15s,border-color .15s,box-shadow .2s,transform .2s}
+  .chip:active{transform:scale(.98)}
+  .chip svg{width:32px;height:32px;stroke:var(--preto);fill:none;stroke-width:1.4}
+  .chip.sel{background:#fff;border-color:var(--preto);color:var(--ouro-escuro);font-weight:600;box-shadow:var(--sombra-2);transform:translateY(-3px)}
+  .chip.sel svg{stroke:var(--ouro-escuro)}
+  .chip.small{height:76px}
+  /* "Outro" vira uma pílula na largura das 4 opções, logo abaixo delas */
+  /* "Outro": pílula só com borda, à direita do título da pergunta */
+  .outro-pill{margin-left:auto;height:44px;padding:0 18px 0 20px;border-radius:999px;border:1.5px solid #CFCAC0;background:transparent;display:flex;align-items:center;gap:10px;font-family:var(--sans);font-size:17px;font-weight:500;color:#333;cursor:pointer;transition:.15s}
+  .outro-pill svg{width:12px;height:8px;fill:none;stroke:currentColor;stroke-width:1.6}
+  .outro-pill.sel{background:#fff;border-color:var(--preto);color:var(--ouro-escuro);font-weight:600;box-shadow:var(--sombra-2)}
+  .mini-lbl{display:flex;align-items:center}
+  /* peso na mesma linha do título, alinhado à direita */
+  .peso-row{align-items:center}
+  .peso-row .wbox{width:auto;margin-left:auto;justify-content:flex-end}
+  [data-outros]{position:relative}
+  /* roda de seleção (estilo seletor de data do iOS) */
+  .sheet-bg{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(14,14,14,0);transition:background .25s}
+  .sheet-bg.on{background:rgba(14,14,14,.35)}
+  .sheet{width:100%;max-width:820px;background:var(--fundo);border-radius:32px 32px 0 0;padding:20px 40px calc(44px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+  .sheet-bg.on .sheet{transform:none}
+  .sheet-top{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .sheet-title{font-size:21px;font-weight:600}
+  .sheet-btn{background:none;border:none;font-family:var(--sans);font-size:19px;color:var(--texto2);padding:12px;cursor:pointer}
+  .sheet-btn.ok{color:var(--preto);font-weight:600}
+  .wheel{position:relative;height:400px;margin-top:20px;perspective:1000px}
+  .wheel .band{position:absolute;left:0;right:0;top:160px;height:80px;border-radius:20px;background:#fff;box-shadow:var(--sombra-1)}
+  .wheel-scroll{position:relative;height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;padding:160px 0;scrollbar-width:none;-webkit-mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent);mask-image:linear-gradient(transparent,#000 28%,#000 72%,transparent)}
+  .wheel-scroll::-webkit-scrollbar{display:none}
+  .wi{height:80px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:500;scroll-snap-align:center;cursor:pointer;transform-origin:center}
+  .sheet-clear{display:block;margin:20px auto 0;background:none;border:none;color:var(--texto2);font-size:17px;text-decoration:underline;font-family:var(--sans);cursor:pointer}
+
+  .wbox{width:100%;display:flex;align-items:baseline;justify-content:center;gap:8px;cursor:text;padding:4px 0}
+  .wbox input{border:none;outline:none;font-family:var(--num);font-size:86px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;width:4ch;padding:0;text-align:left;background:transparent;color:var(--ouro-escuro);caret-color:var(--ouro);-webkit-user-select:text;user-select:text}
+  .wbox input::placeholder{color:#d6d2ca}
+  /* brilho no peso digitado: o Safari não pinta degradê dentro de <input>, então um <span> espelha o texto por cima */
+  .wfield{position:relative;display:inline-block}
+  .wglow{position:absolute;left:0;top:0;pointer-events:none;white-space:pre;font:inherit;color:transparent;display:none;background:linear-gradient(105deg,var(--ouro-escuro) 0%,var(--ouro-escuro) 40%,#F8EBC4 50%,var(--ouro-escuro) 60%,var(--ouro-escuro) 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:brilho 3.2s ease-in-out infinite}
+  .wglow{font-family:var(--num);font-size:86px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+  .wbox.sm .wglow{font-size:67px}
+  #single-form .wglow{font-size:128px}
+  .wfield.on .wglow{display:block}
+  .wfield.on input{color:transparent}
+  @keyframes brilho{0%{background-position:100% 0}60%,100%{background-position:0 0}}
+  .wbox .u{font-family:var(--num);font-size:43px;font-weight:500;color:var(--texto2)}
+  .wbox.sm input{font-size:67px}
+  .wbox.sm .u{font-size:34px}
+  .whint{text-align:center;font-size:16px;color:var(--texto2);margin-top:10px}
+  .whint:empty{display:none}
+
+  /* Tela principal: ocupa a altura toda e distribui as perguntas, em vez de amontoar no topo. */
+  #v-single .appbar{height:96px;border-bottom:none;justify-content:space-between;padding:0 64px}
+  #v-single .body{padding:12px 64px 24px}
+  #v-single .h1{font-size:64px}
+  #single-form{flex:1;display:flex;flex-direction:column;justify-content:space-evenly;padding-top:0}
+  #single-form .q{margin-top:0}
+  #single-form .q-head{margin-bottom:22px}
+  #single-form .chips{gap:18px}
+  #single-form .chip{height:132px;border-radius:20px;font-size:21px;gap:12px}
+  #single-form .chip svg{width:40px;height:40px}
+  #single-form .chip.small{height:132px}
+  #single-form .wbox input{font-size:128px}
+  #single-form .wbox .u{font-size:64px}
+  #v-single .footer{border-top:none;padding-top:8px;padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+
+  /* teclado numérico próprio (o iPad não tem teclado só de dígitos) */
+  .kp{position:fixed;left:50%;bottom:0;width:100%;max-width:820px;z-index:40;background:var(--fundo);border-radius:28px 28px 0 0;box-shadow:0 -10px 40px rgba(30,25,15,.14);padding:6px 56px calc(28px + env(safe-area-inset-bottom));transform:translate(-50%,105%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+  .kp.on{transform:translate(-50%,0)}
+  .kp-top{display:flex;justify-content:flex-end;height:56px;align-items:center}
+  .kp-ok{background:none;border:none;font-family:var(--sans);font-size:19px;font-weight:600;color:var(--ouro-escuro);padding:12px 4px;cursor:pointer}
+  .kp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .kp-key{height:78px;border-radius:18px;border:1.5px solid var(--linha);background:var(--superficie);box-shadow:var(--sombra-1);font-family:var(--num);font-size:38px;font-weight:500;color:var(--preto);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .08s,background .08s}
+  .kp-key:active{transform:scale(.96);background:#fff}
+  .kp-key svg{width:36px;height:26px;fill:none;stroke:var(--preto);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+  html.kp-on .app{padding-bottom:var(--kp)}
+  html.kp-on .footer{bottom:var(--kp)}
+  html.kp-on #v-single .footer{padding-bottom:24px}
+  .whint.err{color:#A3412E}
+
+  .footer{margin-top:auto;padding:24px 64px calc(36px + env(safe-area-inset-bottom));border-top:1px solid var(--linha);display:flex;align-items:center;justify-content:center;gap:26px;background:var(--fundo);position:sticky;bottom:0}
+  .progress{font-size:18px;color:var(--texto2);white-space:nowrap}
+  .btn{flex:1;max-width:520px;height:86px;border-radius:30px;background:var(--preto);color:#fff;font-size:23px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;border:none;font-family:var(--sans);cursor:pointer;box-shadow:var(--sombra-2);transition:.2s}
+  .btn .g{color:var(--ouro);font-size:26px}
+  .btn:disabled{background:var(--linha);color:var(--texto2);cursor:default;box-shadow:none}
+  .btn:disabled .g{color:var(--texto2)}
+  .btn.ghost{background:var(--superficie);box-shadow:var(--sombra-1);color:var(--preto);border:1.5px solid var(--preto)}
+
+  /* várias joias */
+  .list{display:flex;flex-direction:column;gap:16px;margin-top:28px}
+  .jcard{border:1.5px solid var(--linha);border-radius:18px;padding:22px 26px}
+  .jcard.open{border-color:var(--preto)}
+  .jrow{display:flex;align-items:center;gap:14px;font-size:20px}
+  .jrow .t{font-weight:600}
+  .jrow .s{color:var(--texto2)}
+  .jrow .e{margin-left:auto;font-size:16px;color:var(--texto2);background:none;border:none;font-family:var(--sans);padding:10px 4px;cursor:pointer;text-decoration:underline}
+  .check{width:34px;height:34px;border-radius:50%;background:var(--ouro);color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.2);display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .numc{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--preto);display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0}
+  .add{height:80px;border:1.5px dashed #c9c5bc;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:20px;font-weight:500;color:#333;background:transparent;font-family:var(--sans);cursor:pointer;width:100%}
+  .add span{color:var(--ouro);font-size:30px;line-height:1}
+  .mini-lbl{font-size:17px;font-weight:600;margin:20px 0 12px}
+
+  /* carregamento */
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:0 70px}
+  .ring-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+  .ring{width:180px;height:180px;border-radius:50%;border:3px solid var(--ouro-claro);border-top-color:var(--ouro);animation:spin 1.4s linear infinite}
+  .gem{position:absolute;width:56px;height:56px;stroke:var(--preto);fill:none;stroke-width:1.3}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .checklist{list-style:none;display:flex;flex-direction:column;gap:22px;font-size:22px;width:420px}
+  .checklist li{display:flex;align-items:center;gap:16px;color:var(--texto2);transition:.2s}
+  .checklist li.ok{color:var(--preto)}
+  .checklist .dot{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--linha);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .checklist li.ok .dot{background:var(--ouro);border-color:transparent;color:#fff}
+  .checklist li.now .dot{border-color:var(--ouro);border-top-color:transparent;animation:spin 1s linear infinite}
+
+  /* resultado */
+  .result-label{font-size:16px;letter-spacing:.28em;text-transform:uppercase;color:var(--texto2);font-weight:600;text-align:center;line-height:1.7}
+  .value{font-family:var(--num);font-size:112px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;display:flex;align-items:flex-start;gap:14px;animation:rise .6s ease both}
+  .value small{font-size:40px;font-weight:500;letter-spacing:0;margin-top:14px;color:var(--texto2)}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .pbar{width:440px;height:4px;border-radius:2px;background:#E4DFD3;overflow:hidden}
+  .pbar i{display:block;height:100%;width:0;background:var(--ouro);border-radius:2px}
+  .value .n{font-variant-numeric:tabular-nums}
+  .value .n.brilho{color:transparent;background:linear-gradient(105deg,var(--ouro-escuro) 0%,var(--ouro-escuro) 40%,#F8EBC4 50%,var(--ouro-escuro) 60%,var(--ouro-escuro) 100%);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;animation:brilho 3.2s ease-in-out infinite}
+  .revela{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+  .revela.on{opacity:1;transform:none}
+  #v-result.contando .footer{visibility:hidden}
+  #v-result .appbar{height:96px;border-bottom:none;justify-content:flex-start;padding:0 64px}
+  #v-result .footer{border-top:none}
+  .gold-rule{width:80px;height:2px;background:var(--ouro)}
+  .summary{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .tag{padding:12px 22px;border:1.5px solid var(--linha);border-radius:999px;font-size:18px}
+  .note{font-size:16px;color:var(--texto2);text-align:center;max-width:460px;line-height:1.5}
+  .rlines{width:100%}
+  .rline{display:flex;align-items:center;gap:16px;padding:22px 0;border-bottom:1px solid var(--linha);font-size:20px}
+  .rline .v{margin-left:auto;font-weight:600;font-family:var(--num);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- UMA JOIA -->
+  <section class="view on" id="v-single">
+    <div class="appbar">
+      <img class="logo-img" src="logo-transparente.png" alt="Valor da Joia — Compra de ouro">
+      <button class="corner pill" id="to-multi"><span class="g">+</span>Várias joias</button>
+    </div>
+    <div class="body">
+      <div id="single-form"></div>
+    </div>
+    <div class="footer">
+      <button class="btn" id="single-go" disabled>Avaliar joia <span class="g">→</span></button>
+    </div>
+  </section>
+
+  <!-- VÁRIAS JOIAS -->
+  <section class="view" id="v-multi">
+    <div class="appbar">
+      <button class="corner l" id="to-single"><span class="g">←</span>Uma joia</button>
+      <img class="logo-img" src="logo-transparente.png" alt="Valor da Joia — Compra de ouro">
+    </div>
+    <div class="body">
+      <div class="h1">Várias joias</div>
+      <div class="list" id="multi-list"></div>
+    </div>
+    <div class="footer">
+      <div class="progress" id="multi-progress"></div>
+      <button class="btn" id="multi-go" disabled></button>
+    </div>
+  </section>
+
+  <!-- CARREGANDO -->
+
+  <!-- RESULTADO -->
+  <section class="view" id="v-result">
+    <div class="appbar"><img class="logo-img" src="logo-transparente.png" alt="Valor da Joia — Compra de ouro"></div>
+    <div class="center" id="result-body"></div>
+    <div class="footer"><button class="btn ghost" id="restart">Nova avaliação</button></div>
+  </section>
+</div>
+
+<script>
+// Valores simulados só para a POC (R$ por grama).
+// Só ouro, em ordem decrescente de pureza. Os teores mais baixos ficam atrás do botão "Outro".
+const MATERIAIS = ['Ouro 24k','Ouro 22k','Ouro 18k','Ouro 16k'];
+const OUTROS_MATERIAL = ['Ouro 14k','Ouro 10k'];
+// Tudo de ouro que pode chegar ao balcão além das 4 peças principais.
+const OUTROS_TIPO = ['Aliança','Corrente','Pingente','Medalha','Moeda','Barra','Tarraxa','Piercing','Abotoadura','Prótese dentária'];
+const quilate = m => m.replace('Ouro ', '');
+// Valores simulados: R$ 600/g no ouro puro, proporcional ao quilate.
+const PRECO_G = Object.fromEntries([...MATERIAIS, ...OUTROS_MATERIAL].map(m => [m, 600 * parseInt(quilate(m)) / 24]));
+const TIPOS = [
+  ['Anel','<circle cx="18" cy="21" r="10"/><path d="M13 9l5-5 5 5-5 3z"/>'],
+  ['Colar','<path d="M6 6c0 14 6 20 12 20s12-6 12-20"/><circle cx="18" cy="29" r="3"/>'],
+  ['Pulseira','<ellipse cx="18" cy="18" rx="13" ry="8"/><ellipse cx="18" cy="18" rx="9" ry="4.5"/>'],
+  ['Brinco','<circle cx="18" cy="8" r="3"/><path d="M18 11v5"/><path d="M12 22l6-6 6 6-6 9z"/>'],
+];
+
+const novaJoia = () => ({tipo:null, material:null, peso:''});
+let single = novaJoia();
+let multi = [];
+let aberta = 0;
+
+const $ = id => document.getElementById(id);
+const brl = n => n.toLocaleString('pt-BR',{maximumFractionDigits:0});
+
+function parsePeso(txt){
+  const t = txt.trim().replace('.',',');
+  if(!/^\d{1,4}(,\d{1,2})?$/.test(t)) return null;
+  const n = parseFloat(t.replace(',','.'));
+  return n > 0 ? n : null;
+}
+const completa = j => j.tipo && j.material && parsePeso(j.peso) !== null;
+const respondidas = j => (j.tipo?1:0) + (j.material?1:0) + (parsePeso(j.peso)!==null?1:0);
+const resumo = j => `${j.tipo} · ${j.material} · ${j.peso.replace('.',',')} g`;
+const valor = j => Math.round(parsePeso(j.peso) * PRECO_G[j.material] / 10) * 10;
+
+const OUTROS = {
+  tipo:     {titulo:'Tipo de peça', lista:OUTROS_TIPO,     rotulo:v => v},
+  material: {titulo:'Quilate',      lista:OUTROS_MATERIAL, rotulo:quilate},
+};
+
+// Roda de seleção em tela cheia, no estilo do seletor de data do iOS.
+function abrirRoda({titulo, opcoes, atual, escolher}){
+  const ITEM = 80;
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = `<div class="sheet" role="dialog" aria-label="${titulo}">
+    <div class="sheet-top"><button class="sheet-btn" data-x>Cancelar</button><div class="sheet-title">${titulo}</div><button class="sheet-btn ok" data-ok>Confirmar</button></div>
+    <div class="wheel"><div class="band"></div><div class="wheel-scroll">${opcoes.map(o => `<div class="wi">${o.label}</div>`).join('')}</div></div>
+    ${atual ? '<button class="sheet-clear" data-limpar>Remover seleção</button>' : ''}
+  </div>`;
+  document.body.appendChild(bg);
+  const sc = bg.querySelector('.wheel-scroll'), itens = [...sc.children];
+  const gira = () => {
+    const c = sc.scrollTop / ITEM;
+    itens.forEach((it, i) => {
+      const d = i - c, a = Math.min(Math.abs(d), 3);
+      it.style.opacity = 1 - a * .28;
+      it.style.transform = `rotateX(${-d * 20}deg) scale(${1 - a * .06})`;
+    });
+  };
+  const fecha = () => { bg.classList.remove('on'); setTimeout(() => bg.remove(), 320); };
+  sc.addEventListener('scroll', gira, {passive:true});
+  itens.forEach((it, i) => it.addEventListener('click', () => sc.scrollTo({top: i * ITEM, behavior:'smooth'})));
+  bg.addEventListener('click', e => { if(e.target === bg) fecha(); });
+  bg.querySelector('[data-x]').onclick = fecha;
+  bg.querySelector('[data-ok]').onclick = () => {
+    escolher(opcoes[Math.min(Math.round(sc.scrollTop / ITEM), opcoes.length - 1)].v);
+    fecha();
+  };
+  bg.querySelector('[data-limpar]')?.addEventListener('click', () => { escolher(null); fecha(); });
+  sc.scrollTop = Math.max(0, opcoes.findIndex(o => o.v === atual)) * ITEM;
+  gira();
+  requestAnimationFrame(() => bg.classList.add('on'));
+}
+
+// Monta o formulário de uma joia dentro de `el`; `compacto` é a versão do modo várias.
+function form(el, j, compacto, onChange){
+  const chipCls = compacto ? 'chip small' : 'chip';
+  const campo = `<label class="wbox ${compacto?'sm':''}"><span class="wfield"><input inputmode="none" enterkeyhint="done" autocomplete="off" placeholder="0,00" value="${j.peso}"><span class="wglow" aria-hidden="true"></span></span><span class="u">g</span></label>`;
+  const pilula = k => `<button class="outro-pill" data-outros="${k}"><span class="lbl">Outro</span><svg viewBox="0 0 12 8"><path d="M1 1.5l5 5 5-5"/></svg></button>`;
+  el.innerHTML = `
+    ${compacto ? `<div class="mini-lbl">Tipo de peça${pilula('tipo')}</div>` : `<div class="q"><div class="q-head"><div class="num" data-n="tipo">1</div><div class="q-title">Tipo de peça</div>${pilula('tipo')}</div>`}
+      <div class="chips" data-k="tipo">${TIPOS.map(([n,svg])=>`<button class="${chipCls}" data-v="${n}">${compacto?'':`<svg viewBox="0 0 36 36">${svg}</svg>`}${n}</button>`).join('')}</div>
+    ${compacto ? `<div class="mini-lbl">Material${pilula('material')}</div>` : `</div><div class="q"><div class="q-head"><div class="num" data-n="material">2</div><div class="q-title">Material</div>${pilula('material')}</div>`}
+      <div class="chips" data-k="material">${MATERIAIS.map(n=>`<button class="chip small" data-v="${n}">${quilate(n)}</button>`).join('')}</div>
+    ${compacto ? `<div class="mini-lbl peso-row">Peso${campo}</div>` : `</div><div class="q"><div class="q-head peso-row"><div class="num" data-n="peso">3</div><div class="q-title">Peso</div>${campo}</div>`}
+      <div class="whint"></div>
+    ${compacto ? '' : '</div>'}`;
+
+  const pinta = () => {
+    el.querySelectorAll('.chips').forEach(g => g.querySelectorAll('.chip[data-v]').forEach(c => c.classList.toggle('sel', j[g.dataset.k] === c.dataset.v)));
+    el.querySelectorAll('[data-outros]').forEach(b => {
+      const k = b.dataset.outros, extra = OUTROS[k].lista.includes(j[k]);
+      b.classList.toggle('sel', extra);
+      // escolhido: o botão mostra só o valor (ex.: "22k"), sem o "Outro"
+      b.querySelector('.lbl').textContent = extra ? OUTROS[k].rotulo(j[k]) : 'Outro';
+    });
+    const ok = {tipo:!!j.tipo, material:!!j.material, peso:parsePeso(j.peso)!==null};
+    el.querySelectorAll('.num').forEach(n => { n.classList.toggle('done', ok[n.dataset.n]); n.textContent = ok[n.dataset.n] ? '✓' : {tipo:1,material:2,peso:3}[n.dataset.n]; });
+    const glow = el.querySelector('.wglow');
+    glow.textContent = j.peso;
+    glow.parentElement.classList.toggle('on', j.peso.trim() !== '');
+    const hint = el.querySelector('.whint');
+    const invalido = j.peso.trim() !== '' && parsePeso(j.peso) === null;
+    hint.classList.toggle('err', invalido);
+    hint.textContent = invalido ? 'Peso inválido. Use até 2 casas (ex.: 12,40).' : '';
+  };
+  el.querySelectorAll('[data-outros]').forEach(o => o.addEventListener('click', () => {
+    {
+      // "Outro" abre a roda de seleção em tela cheia.
+      const k = o.dataset.outros, cfg = OUTROS[k];
+      abrirRoda({
+        titulo: cfg.titulo,
+        opcoes: cfg.lista.map(v => ({v, label: cfg.rotulo(v)})),
+        atual: cfg.lista.includes(j[k]) ? j[k] : null,
+        escolher: v => { j[k] = v; pinta(); onChange(); },
+      });
+    }
+  }));
+  el.querySelectorAll('.chips').forEach(g => g.addEventListener('click', e => {
+    const c = e.target.closest('.chip[data-v]'); if(!c) return;
+    j[g.dataset.k] = j[g.dataset.k] === c.dataset.v ? null : c.dataset.v;
+    pinta(); onChange();
+  }));
+  const inp = el.querySelector('input');
+  inp.closest('.wbox').addEventListener('click', () => { inp.focus({preventScroll:true}); abrirTeclado(inp); });
+  // Campo cresce com o texto para o número + "g" ficarem centralizados juntos.
+  // Mede com um <span> invisível no mesmo estilo do campo (mais fiel que canvas).
+  const medida = document.createElement('span');
+  medida.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px';
+  el.appendChild(medida);
+  const ajusta = () => {
+    const cs = getComputedStyle(inp);
+    ['fontFamily','fontSize','fontWeight','letterSpacing','fontVariantNumeric'].forEach(k => medida.style[k] = cs[k]);
+    medida.textContent = inp.value || inp.placeholder;
+    inp.style.width = Math.ceil(medida.getBoundingClientRect().width) + 6 + 'px';
+  };
+  // O iPad não tem teclado só de dígitos, então filtramos: só números, vírgula (ponto vira vírgula),
+  // até 4 dígitos inteiros e 2 casas decimais. Qualquer outra tecla simplesmente não entra.
+  const soNumero = v => {
+    v = v.replace('.', ',').replace(/[^0-9,]/g, '');
+    const [int, ...resto] = v.split(',');
+    return resto.length ? int.slice(0, 4) + ',' + resto.join('').slice(0, 2) : int.slice(0, 4);
+  };
+  inp.addEventListener('input', () => {
+    const limpo = soNumero(inp.value);
+    if(limpo !== inp.value) inp.value = limpo;
+    j.peso = inp.value; ajusta(); pinta(); onChange();
+  });
+  ajusta();
+
+  // Enquanto o campo está vazio, o exemplo sobe de 0,00 até um peso sorteado e volta, em ciclos de 10 s.
+  // Distribuição uniforme centrada em 3 g, de 0,30 (tarracha de brinco) a 5,70.
+  const CICLO = 10000, SOBE = 3000, SEGURA = 5000;   // desce no restante (2 s)
+  const suave = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  const fmt = v => v.toFixed(2).replace('.', ',');
+  let alvo = 0, inicio = 0;
+  const quadro = agora => {
+    if(!inp.isConnected) return;
+    if(!inicio || agora - inicio >= CICLO){ inicio = agora; alvo = 0.3 + Math.random() * 5.4; }
+    const t = agora - inicio;
+    const f = t < SOBE ? suave(t / SOBE) : t < SOBE + SEGURA ? 1 : 1 - suave((t - SOBE - SEGURA) / (CICLO - SOBE - SEGURA));
+    const novo = fmt(alvo * f);
+    // Re-mede a cada mudança: se o form foi montado com a tela escondida, a largura inicial veio zerada.
+    if(novo !== inp.placeholder){ inp.placeholder = novo; if(!inp.value) ajusta(); }
+    requestAnimationFrame(quadro);
+  };
+  inp.placeholder = '0,00';
+  ajusta();
+  requestAnimationFrame(quadro);
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter') inp.blur(); });
+  pinta();
+}
+
+// ---- teclado numérico próprio: só 0–9, vírgula e apagar ----
+let teclado = null, alvo = null;
+function criarTeclado(){
+  teclado = document.createElement('div');
+  teclado.className = 'kp';
+  const apagar = '<svg viewBox="0 0 28 20"><path d="M9 1h15a3 3 0 013 3v12a3 3 0 01-3 3H9L1 10z"/><path d="M14 6.5l7 7M21 6.5l-7 7"/></svg>';
+  teclado.innerHTML = `<div class="kp-top"><button class="kp-ok" data-k="ok">Concluir</button></div>
+    <div class="kp-grid">${['1','2','3','4','5','6','7','8','9',',','0','del'].map(k => `<button class="kp-key" data-k="${k}" aria-label="${k==='del'?'Apagar':k}">${k==='del'?apagar:k}</button>`).join('')}</div>`;
+  document.body.appendChild(teclado);
+  teclado.addEventListener('mousedown', e => e.preventDefault());   // não tira o foco do campo
+  teclado.addEventListener('click', e => {
+    const b = e.target.closest('[data-k]'); if(!b || !alvo) return;
+    const k = b.dataset.k;
+    if(k === 'ok') return fecharTeclado();
+    let v = alvo.value;
+    if(k === 'del') v = v.slice(0, -1);
+    else if(k === ','){ if(v.includes(',')) return; v = (v || '0') + ','; }
+    else v += k;
+    alvo.value = v;
+    alvo.dispatchEvent(new Event('input'));   // o filtro e a atualização da tela já ficam no handler do campo
+  });
+}
+function abrirTeclado(inp){
+  if(!teclado) criarTeclado();
+  alvo = inp;
+  teclado.classList.add('on');
+  const h = teclado.offsetHeight;
+  document.documentElement.style.setProperty('--kp', h + 'px');
+  document.documentElement.classList.add('kp-on');
+  requestAnimationFrame(() => {   // mantém o campo visível acima do teclado e do botão
+    const footer = document.querySelector('.view.on .footer');
+    const livre = innerHeight - h - (footer ? footer.offsetHeight : 0) - 24;
+    const r = inp.getBoundingClientRect();
+    if(r.bottom > livre) window.scrollBy({top: r.bottom - livre, behavior: 'smooth'});
+  });
+}
+function fecharTeclado(){
+  if(!teclado || !teclado.classList.contains('on')) return;
+  teclado.classList.remove('on');
+  document.documentElement.classList.remove('kp-on');
+  document.documentElement.style.removeProperty('--kp');
+  if(alvo){ alvo.blur(); alvo = null; }
+}
+// tocar fora do campo e do teclado fecha (no click, para o toque no botão "Avaliar" ainda valer)
+document.addEventListener('click', e => { if(alvo && !e.target.closest('.kp, .wbox')) fecharTeclado(); });
+
+function show(id){
+  fecharTeclado();
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
+  window.scrollTo(0,0);
+}
+
+// ---- uma joia ----
+function renderSingle(){
+  form($('single-form'), single, false, atualizaSingle);
+  atualizaSingle();
+}
+function atualizaSingle(){
+  $('single-go').disabled = !completa(single);
+}
+
+// ---- várias joias ----
+function renderMulti(){
+  const list = $('multi-list');
+  list.innerHTML = '';
+  multi.forEach((j,i) => {
+    const card = document.createElement('div');
+    if(i === aberta){
+      card.className = 'jcard open';
+      card.innerHTML = `<div class="jrow"><span class="numc">${i+1}</span><span class="t">Joia ${i+1}</span>${multi.length>1?'<button class="e" data-rm>Remover</button>':''}</div><div class="f"></div>`;
+      form(card.querySelector('.f'), j, true, atualizaMulti);
+    } else {
+      const ok = completa(j);
+      card.className = 'jcard';
+      card.innerHTML = `<div class="jrow">${ok?'<span class="check">✓</span>':`<span class="numc">${i+1}</span>`}<span class="t">Joia ${i+1}</span><span class="s">${ok?resumo(j):'incompleta'}</span><button class="e" data-ed>Editar</button>${multi.length>1?'<button class="e" data-rm>Remover</button>':''}</div>`;
+    }
+    card.querySelector('[data-ed]')?.addEventListener('click', () => { aberta = i; renderMulti(); });
+    card.querySelector('[data-rm]')?.addEventListener('click', () => { multi.splice(i,1); aberta = Math.min(aberta, multi.length-1); renderMulti(); });
+    list.appendChild(card);
+  });
+  const add = document.createElement('button');
+  add.className = 'add';
+  add.innerHTML = '<span>+</span>Adicionar outra joia';
+  add.addEventListener('click', () => { multi.push(novaJoia()); aberta = multi.length-1; renderMulti(); });
+  list.appendChild(add);
+  atualizaMulti();
+}
+function atualizaMulti(){
+  const n = multi.length;
+  $('multi-progress').textContent = `${n} ${n===1?'joia':'joias'}`;
+  $('multi-go').innerHTML = `Avaliar ${n} ${n===1?'joia':'joias'} <span class="g">→</span>`;
+  $('multi-go').disabled = !multi.every(completa);
+}
+
+// ---- carregamento + resultado ----
+// Carregamento e resultado são a mesma tela: o valor sobe contando enquanto a barra enche.
+const CONTAGEM = 3200;
+function avaliar(joias){
+  const total = joias.reduce((s,j) => s + valor(j), 0);
+  const varias = joias.length > 1;
+  $('result-body').innerHTML = `
+    <div class="result-label">${varias ? 'Valor total estimado<br>de acordo com a bolsa' : 'Valor estimado<br>de acordo com a bolsa'}</div>
+    <div class="value"><small>R$</small><span class="n">0</span></div>
+    <div class="pbar"><i></i></div>
+`;
+  const n = $('result-body').querySelector('.n'), barra = $('result-body').querySelector('.pbar i');
+  $('v-result').classList.add('contando');
+  show('v-result');
+  const t0 = performance.now();
+  const passo = agora => {
+    const t = Math.min(1, (agora - t0) / CONTAGEM);
+    const f = 1 - Math.pow(1 - t, 3);   // desacelera no fim; barra e valor andam juntos
+    n.textContent = brl(total * f);
+    barra.style.width = (f * 100) + '%';
+    if(t < 1) return requestAnimationFrame(passo);
+    n.textContent = brl(total);
+    n.classList.add('brilho');
+    $('result-body').querySelector('.revela')?.classList.add('on');
+    $('v-result').classList.remove('contando');
+  };
+  requestAnimationFrame(passo);
+}
+
+$('to-multi').addEventListener('click', () => {
+  multi = [single, novaJoia()];
+  aberta = 1;
+  renderMulti(); show('v-multi');
+});
+$('to-single').addEventListener('click', () => {
+  single = multi[0] || novaJoia();
+  renderSingle(); show('v-single');
+});
+$('single-go').addEventListener('click', () => avaliar([single]));
+$('multi-go').addEventListener('click', () => avaliar(multi));
+$('restart').addEventListener('click', () => { single = novaJoia(); multi = []; renderSingle(); show('v-single'); });
+
+renderSingle();
+</script>
+</body>
+</html>

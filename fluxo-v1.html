@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valor da Joia — Mockup v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --preto:#0E0E0E; --branco:#FFFFFF; --off:#F7F6F3; --linha:#E4E2DD;
+    --texto2:#6B6B6B; --ouro:#B8955A; --ouro-claro:#E9DCC4;
+    --serif:'Cormorant Garamond', Georgia, serif; --sans:'Inter', system-ui, sans-serif;
+    --s:.42;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEBE6;font-family:var(--sans);color:var(--preto);padding:48px 32px 80px}
+  .page-title{max-width:1200px;margin:0 auto 8px;font-family:var(--serif);font-size:40px;font-weight:500}
+  .page-sub{max-width:1200px;margin:0 auto 40px;color:var(--texto2);font-size:15px;line-height:1.5}
+  h2.sec{max-width:1200px;margin:56px auto 20px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--texto2);font-weight:600}
+
+  /* ---------- fluxo ---------- */
+  .flow{max-width:1200px;margin:0 auto;display:flex;gap:28px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+  .step-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .step-label{font-size:13px;color:var(--texto2)}
+  .step-label b{color:var(--preto);font-weight:600}
+  .ipad{width:calc(820px * var(--s) + 24px);height:calc(1180px * var(--s) + 24px);background:#1b1b1b;border-radius:28px;padding:12px;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+  .screen{width:calc(820px * var(--s));height:calc(1180px * var(--s));overflow:hidden;border-radius:16px;background:var(--branco);position:relative}
+  .canvas{width:820px;height:1180px;transform:scale(var(--s));transform-origin:top left;position:absolute;inset:0;display:flex;flex-direction:column}
+
+  /* cabeçalho do app */
+  .appbar{height:96px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--linha)}
+  .logo{font-family:var(--serif);font-size:30px;letter-spacing:.32em;font-weight:500;display:flex;align-items:center;gap:18px}
+  .logo i{display:block;width:28px;height:1px;background:var(--ouro)}
+
+  /* tela 1 */
+  .body{padding:56px 72px 0;flex:1;display:flex;flex-direction:column}
+  .h1{font-family:var(--serif);font-size:58px;font-weight:500;line-height:1.05}
+  .lead{font-size:22px;color:var(--texto2);margin-top:12px}
+  .q{margin-top:52px}
+  .q-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+  .num{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--linha);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--texto2)}
+  .num.done{background:var(--ouro);border-color:var(--ouro);color:#fff}
+  .q-title{font-size:24px;font-weight:600}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .chip{height:120px;border:1.5px solid var(--linha);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:20px;font-weight:500;background:#fff}
+  .chip svg{width:36px;height:36px;stroke:var(--preto);fill:none;stroke-width:1.4}
+  .chip.sel{background:var(--preto);border-color:var(--preto);color:#fff}
+  .chip.sel svg{stroke:var(--ouro)}
+  .chip.small{height:84px}
+  .footer{padding:28px 72px 44px;border-top:1px solid var(--linha);display:flex;align-items:center;gap:28px}
+  .progress{font-size:18px;color:var(--texto2);white-space:nowrap}
+  .btn{flex:1;height:88px;border-radius:16px;background:var(--preto);color:#fff;font-size:24px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:14px;border:none}
+  .btn .arrow{color:var(--ouro);font-size:28px}
+  .btn.ghost{background:#fff;color:var(--preto);border:1.5px solid var(--preto)}
+
+  /* tela 2 */
+  .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:0 100px}
+  .ring{width:180px;height:180px;border-radius:50%;border:3px solid var(--ouro-claro);border-top-color:var(--ouro);animation:spin 1.4s linear infinite;position:relative}
+  .ring-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+  .gem{position:absolute;width:56px;height:56px;stroke:var(--preto);fill:none;stroke-width:1.3}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .checklist{list-style:none;display:flex;flex-direction:column;gap:22px;font-size:22px;width:420px}
+  .checklist li{display:flex;align-items:center;gap:16px;color:var(--texto2)}
+  .checklist li.ok{color:var(--preto)}
+  .checklist .dot{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--linha);display:flex;align-items:center;justify-content:center;font-size:16px}
+  .checklist li.ok .dot{background:var(--ouro);border-color:var(--ouro);color:#fff}
+  .checklist li.now .dot{border-color:var(--ouro);border-top-color:transparent;animation:spin 1s linear infinite}
+
+  /* tela 3 */
+  .result-label{font-size:16px;letter-spacing:.28em;text-transform:uppercase;color:var(--texto2);font-weight:600}
+  .value{font-family:var(--serif);font-size:132px;font-weight:500;line-height:1;display:flex;align-items:flex-start;gap:12px}
+  .value small{font-size:48px;margin-top:20px}
+  .gold-rule{width:80px;height:2px;background:var(--ouro)}
+  .summary{display:flex;gap:12px}
+  .tag{padding:12px 22px;border:1.5px solid var(--linha);border-radius:999px;font-size:18px}
+  .note{font-size:17px;color:var(--texto2);text-align:center;max-width:460px;line-height:1.5}
+
+  /* ---------- design system ---------- */
+  .ds{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:#fff;border-radius:14px;padding:24px}
+  .card h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--texto2);margin-bottom:18px}
+  .sw{display:flex;align-items:center;gap:14px;margin-bottom:12px;font-size:14px}
+  .sw span{width:44px;height:44px;border-radius:10px;border:1px solid var(--linha);flex-shrink:0}
+  .sw small{display:block;color:var(--texto2);font-size:12px;margin-top:2px}
+  .type-row{margin-bottom:16px}
+  .type-row small{display:block;font-size:11px;color:var(--texto2);margin-bottom:4px}
+  .comp{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center}
+  .c-chip{padding:12px 18px;border:1.5px solid var(--linha);border-radius:10px;font-size:14px}
+  .c-chip.sel{background:var(--preto);color:#fff;border-color:var(--preto)}
+  .c-btn{padding:14px 22px;border-radius:10px;background:var(--preto);color:#fff;font-size:14px;font-weight:600}
+  .c-btn.off{background:var(--linha);color:var(--texto2)}
+  .c-btn.ghost{background:#fff;color:var(--preto);border:1.5px solid var(--preto)}
+  .rules{font-size:14px;line-height:1.7;color:#333}
+  .rules li{margin-left:18px}
+  @media (max-width:900px){.ds{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Valor da Joia — fluxo da POC</h1>
+<p class="page-sub">iPad em retrato. Uma única tela de perguntas, só toques (sem digitar), carregamento curto e o valor em destaque.<br>As 3 perguntas abaixo são exemplos para dar forma ao fluxo: tipo de peça, material e peso.</p>
+
+<h2 class="sec">1 · O fluxo em três telas</h2>
+<div class="flow">
+
+  <!-- TELA 1 -->
+  <div class="step-wrap">
+    <div class="ipad"><div class="screen"><div class="canvas">
+      <div class="appbar"><div class="logo"><i></i>VALOR DA JOIA<i></i></div></div>
+      <div class="body">
+        <div class="h1">Avalie sua joia</div>
+        <div class="lead">Toque nas opções que descrevem a peça.</div>
+
+        <div class="q">
+          <div class="q-head"><div class="num done">✓</div><div class="q-title">Tipo de peça</div></div>
+          <div class="chips">
+            <div class="chip sel"><svg viewBox="0 0 36 36"><circle cx="18" cy="21" r="10"/><path d="M13 9l5-5 5 5-5 3z"/></svg>Anel</div>
+            <div class="chip"><svg viewBox="0 0 36 36"><path d="M6 6c0 14 6 20 12 20s12-6 12-20"/><circle cx="18" cy="29" r="3"/></svg>Colar</div>
+            <div class="chip"><svg viewBox="0 0 36 36"><ellipse cx="18" cy="18" rx="13" ry="8"/><ellipse cx="18" cy="18" rx="9" ry="4.5"/></svg>Pulseira</div>
+            <div class="chip"><svg viewBox="0 0 36 36"><circle cx="18" cy="8" r="3"/><path d="M18 11v5"/><path d="M12 22l6-6 6 6-6 9z"/></svg>Brinco</div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-head"><div class="num done">✓</div><div class="q-title">Material</div></div>
+          <div class="chips">
+            <div class="chip small sel">Ouro 18k</div>
+            <div class="chip small">Ouro 14k</div>
+            <div class="chip small">Prata 925</div>
+            <div class="chip small">Platina</div>
+          </div>
+        </div>
+
+        <div class="q">
+          <div class="q-head"><div class="num">3</div><div class="q-title">Peso aproximado</div></div>
+          <div class="chips">
+            <div class="chip small">Até 5 g</div>
+            <div class="chip small">5 a 15 g</div>
+            <div class="chip small">15 a 30 g</div>
+            <div class="chip small">Mais de 30 g</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="progress">2 de 3</div>
+        <button class="btn" style="background:var(--linha);color:var(--texto2)">Avaliar joia</button>
+      </div>
+    </div></div></div>
+    <div class="step-label"><b>1. Preenchimento</b> · botão só libera com as 3 respondidas</div>
+  </div>
+
+  <!-- TELA 2 -->
+  <div class="step-wrap">
+    <div class="ipad"><div class="screen"><div class="canvas">
+      <div class="appbar"><div class="logo"><i></i>VALOR DA JOIA<i></i></div></div>
+      <div class="center">
+        <div class="ring-wrap">
+          <div class="ring"></div>
+          <svg class="gem" viewBox="0 0 56 56"><path d="M12 20l8-10h16l8 10-16 26z"/><path d="M12 20h32M20 10l8 36M36 10l-8 36"/></svg>
+        </div>
+        <div class="h1" style="font-size:48px;text-align:center">Avaliando sua joia…</div>
+        <ul class="checklist">
+          <li class="ok"><span class="dot">✓</span>Identificando a peça</li>
+          <li class="ok"><span class="dot">✓</span>Consultando cotação do material</li>
+          <li class="now"><span class="dot"></span>Calculando o valor</li>
+        </ul>
+      </div>
+    </div></div></div>
+    <div class="step-label"><b>2. Carregamento</b> · cerca de 3 segundos, etapas vão marcando</div>
+  </div>
+
+  <!-- TELA 3 -->
+  <div class="step-wrap">
+    <div class="ipad"><div class="screen"><div class="canvas">
+      <div class="appbar"><div class="logo"><i></i>VALOR DA JOIA<i></i></div></div>
+      <div class="center" style="gap:34px">
+        <div class="result-label">Valor estimado</div>
+        <div class="value"><small>R$</small>4.850</div>
+        <div class="gold-rule"></div>
+        <div class="summary">
+          <div class="tag">Anel</div><div class="tag">Ouro 18k</div><div class="tag">5 a 15 g</div>
+        </div>
+        <div class="note">Valor de referência. A avaliação final é feita presencialmente.</div>
+      </div>
+      <div class="footer">
+        <button class="btn ghost">Nova avaliação</button>
+      </div>
+    </div></div></div>
+    <div class="step-label"><b>3. Resultado</b> · valor grande + resumo do que foi escolhido</div>
+  </div>
+</div>
+
+<h2 class="sec">2 · Design system (base)</h2>
+<div class="ds">
+  <div class="card">
+    <h3>Cores</h3>
+    <div class="sw"><span style="background:#0E0E0E"></span><div>Preto<small>#0E0E0E · texto, botão, seleção</small></div></div>
+    <div class="sw"><span style="background:#FFFFFF"></span><div>Branco<small>#FFFFFF · fundo das telas</small></div></div>
+    <div class="sw"><span style="background:#E4E2DD"></span><div>Linha<small>#E4E2DD · bordas, desabilitado</small></div></div>
+    <div class="sw"><span style="background:#6B6B6B"></span><div>Cinza texto<small>#6B6B6B · textos de apoio</small></div></div>
+    <div class="sw"><span style="background:#B8955A"></span><div>Dourado<small>#B8955A · só detalhes: checks, filetes, loading</small></div></div>
+  </div>
+  <div class="card">
+    <h3>Tipografia</h3>
+    <div class="type-row"><small>Cormorant Garamond · títulos e valor</small><div style="font-family:var(--serif);font-size:40px;font-weight:500">R$ 4.850</div></div>
+    <div class="type-row"><small>Cormorant Garamond · título de tela</small><div style="font-family:var(--serif);font-size:26px;font-weight:500">Avalie sua joia</div></div>
+    <div class="type-row"><small>Inter 600 · perguntas e botões</small><div style="font-size:16px;font-weight:600">Material</div></div>
+    <div class="type-row"><small>Inter 400 · apoio</small><div style="font-size:14px;color:var(--texto2)">Toque nas opções que descrevem a peça.</div></div>
+  </div>
+  <div class="card">
+    <h3>Componentes</h3>
+    <div class="comp"><div class="c-chip">Opção</div><div class="c-chip sel">Selecionada</div></div>
+    <div class="comp"><div class="c-btn">Avaliar joia</div><div class="c-btn off">Desabilitado</div></div>
+    <div class="comp"><div class="c-btn ghost">Nova avaliação</div></div>
+    <h3 style="margin-top:20px">Regras</h3>
+    <ul class="rules">
+      <li>Áreas de toque grandes (mín. 64px)</li>
+      <li>Só toques, sem teclado</li>
+      <li>Dourado nunca em texto longo</li>
+      <li>Uma ação principal por tela</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>
