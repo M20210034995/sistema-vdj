@@ -40,6 +40,8 @@ Publicado em **https://m20210034995.github.io/sistema-vdj/** (GitHub Pages, a pa
 
 Cada loja e cada quilate valem o preço que estiver no arquivo; um não depende do outro. Os tablets passam a usar os preços novos em até uns 2 minutos, sem precisar recarregar.
 
+O valor de uma joia é o peso vezes o preço do grama da loja, sem centavos: os centavos arredondam para cima (R$ 1.498,50 vira R$ 1.499). Com várias joias, o total é a soma do valor de cada uma.
+
 Se o bloco de uma loja estiver errado (faltar um quilate, sobrar alguma linha ou algum preço estiver mal escrito), só os aparelhos dessa loja bloqueiam a avaliação, com o aviso "Preço do ouro inválido", até o arquivo ser corrigido. As outras lojas continuam avaliando.
 
 O repositório precisa continuar público. Se ficar privado, a página não consegue ler os preços e mostra "Sistema fora do ar".

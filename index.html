@@ -397,7 +397,10 @@ function parsePeso(txt){
 const completa = j => j.tipo && j.material && parsePeso(j.peso) !== null;
 const respondidas = j => (j.tipo?1:0) + (j.material?1:0) + (parsePeso(j.peso)!==null?1:0);
 const resumo = j => `${j.tipo} · ${j.material} · ${j.peso.replace('.',',')} g`;
-const valor = (j, precos) => Math.round(parsePeso(j.peso) * precos[j.material] / 10) * 10;
+// Valor de uma joia: peso × preço do grama, em reais inteiros, com os centavos arredondados para cima (1.498,50 → 1.499).
+// A conta é feita em inteiros (centésimos de grama × centavos): em ponto flutuante, 0,07 × 300 dá 21,000000000000004,
+// e o arredondamento para cima viraria 22.
+const valor = (j, precos) => Math.ceil(Math.round(parsePeso(j.peso) * 100) * Math.round(precos[j.material] * 100) / 10000);
 
 const OUTROS = {
   tipo:     {titulo:'Tipo de peça', lista:OUTROS_TIPO,     rotulo:v => v},
