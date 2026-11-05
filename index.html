@@ -77,6 +77,16 @@
   .sheet-clear{display:block;margin:20px auto 0;background:none;border:none;color:var(--texto2);font-size:17px;text-decoration:underline;font-family:var(--sans);cursor:pointer}
   /* aviso de bloqueio (avisar), na mesma folha da roda de seleção */
   .sheet-msg{font-size:19px;line-height:1.5;color:var(--texto2);text-align:center;max-width:560px;margin:16px auto 8px}
+  .sheet-nota{font-size:16px;line-height:1.5;color:var(--texto2);text-align:center;max-width:560px;margin:14px auto 0}
+  /* senha da troca de loja (pedirSenha): pontos e teclado próprio dentro da folha, sem o teclado do sistema */
+  .pin-pontos{display:flex;justify-content:center;gap:12px;margin-top:4px}
+  .pin-pontos i{width:16px;height:16px;border-radius:50%;border:1.5px solid #CFCAC0;transition:background .15s,border-color .15s}
+  .pin-pontos i.on{background:var(--ouro-escuro);border-color:var(--ouro-escuro)}
+  .pin-msg{min-height:1.5em;margin-top:10px;text-align:center;font-size:16px;line-height:1.5;color:#A3412E}
+  .pin .kp-grid{max-width:420px;margin:8px auto 0}
+  .pin .kp-key{height:64px;touch-action:manipulation}
+  /* 5 toques no logo abrem a troca de loja: sem o zoom do toque duplo */
+  #v-single .logo-img{touch-action:manipulation}
 
   .wbox{width:100%;display:flex;align-items:baseline;justify-content:center;gap:8px;cursor:text;padding:4px 0}
   .wbox input{border:none;outline:none;font-family:var(--num);font-size:86px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1;width:4ch;padding:0;text-align:left;background:transparent;color:var(--ouro-escuro);caret-color:var(--ouro);-webkit-user-select:text;user-select:text}
@@ -281,6 +291,15 @@
     .sheet[role=alertdialog] .sheet-msg{grid-area:2/1/3/3;font-size:16px;margin:10px auto 14px}
     .sheet[role=alertdialog] [data-x]{grid-area:3/1;justify-self:start}
     .sheet[role=alertdialog] [data-ok]{grid-area:3/2;justify-self:end}
+
+    /* troca de loja: nota da roda e folha da senha */
+    .sheet-nota{font-size:14px;margin-top:10px}
+    .pin .sheet-msg{font-size:16px;margin:8px auto 10px}
+    .pin-pontos{gap:8px}
+    .pin-pontos i{width:12px;height:12px}
+    .pin-msg{font-size:14px;margin-top:6px}
+    .pin .kp-grid{gap:8px}
+    .pin .kp-key{height:52px}   /* repete o seletor: a regra do tablet (.pin .kp-key) venceria o .kp-key daqui */
   }
 </style>
 </head>
@@ -334,17 +353,26 @@ const OUTROS_MATERIAL = ['Ouro 14k','Ouro 10k'];
 // Tudo de ouro que pode chegar ao balcão além das 4 peças principais.
 const OUTROS_TIPO = ['Aliança','Corrente','Pingente','Medalha','Moeda','Barra','Tarraxa','Piercing','Abotoadura','Prótese dentária'];
 const quilate = m => m.replace('Ouro ', '');
-// Preço do grama de cada quilate: fica no arquivo precos-ouro.txt do repositório, uma linha por quilate
-// (Lukas edita pelo site do GitHub). Cada quilate tem o próprio preço; um não depende do outro.
+// Preço do grama de cada quilate em cada loja: fica no arquivo precos-lojas.txt do repositório, um bloco por loja
+// (Lukas edita pelo site do GitHub). Cada loja e cada quilate têm o próprio preço; um não depende do outro.
 // No GitHub Pages, a página lê o arquivo pela API do GitHub, sem login: 60 leituras por hora por rede (IP).
 // Fora dele (servidor local, iPad pela rede), lê o arquivo servido ao lado da página; ?api na URL força a API.
-const PRECO_ARQUIVO = 'precos-ouro.txt';
+// O precos-ouro.txt (uma tabela só) é lido só pelo código antigo: fica no repositório até os tablets serem reabertos.
+const PRECO_ARQUIVO = 'precos-lojas.txt';
 const PRECO_API = `https://api.github.com/repos/M20210034995/sistema-vdj/contents/${PRECO_ARQUIVO}?ref=main`;
 const PRECO_URL = (location.hostname.endsWith('github.io') || new URLSearchParams(location.search).has('api')) ? PRECO_API : PRECO_ARQUIVO;
 const PRECO_REUSO = 60 * 1000;   // a API só atualiza a cada 60 s: reaproveitar o último preço lido não perde nada e poupa leituras
 const PRECO_ESPERA = 8 * 1000;   // sem resposta nesse tempo, conta como fora do ar
-// Os 6 quilates do app: o arquivo de preços precisa ter exatamente estes.
+// Os 6 quilates do app: o bloco de cada loja no arquivo de preços precisa ter exatamente estes.
 const QUILATES = [...MATERIAIS, ...OUTROS_MATERIAL];
+// As lojas. O id fica salvo no aparelho e vai no link (?loja=1). O nome é o cabeçalho do bloco no arquivo
+// de preços e só aparece nas folhas de troca de loja. Renomear: mudar aqui e no arquivo, no mesmo commit.
+const LOJAS = [{id:'1', nome:'Loja ZN'}, {id:'2', nome:'Loja CTC'}, {id:'3', nome:'Loja Nova Parnamirim'}];
+const LOJA_CHAVE = 'vdj-loja';   // chave no localStorage
+// Senha para trocar a loja do aparelho: 10 dígitos, guardada embaralhada (embaralha), para não ficar legível no código.
+// Para trocar a senha: no console da página, embaralha('nova senha'), e pôr o resultado aqui.
+const SENHA_LOJA = '1xsleyanyvb';
+const SENHA_DIGITOS = 10;
 const TIPOS = [
   ['Anel','<circle cx="18" cy="21" r="10"/><path d="M13 9l5-5 5 5-5 3z"/>'],
   ['Colar','<path d="M6 6c0 14 6 20 12 20s12-6 12-20"/><circle cx="18" cy="29" r="3"/>'],
@@ -377,13 +405,16 @@ const OUTROS = {
 };
 
 // Roda de seleção em tela cheia, no estilo do seletor de data do iOS.
-function abrirRoda({titulo, opcoes, atual, escolher}){
+// obrigatorio: sem "Cancelar" (o lugar fica, para o título continuar no meio) e o fundo não fecha.
+// limpar: mostra "Remover seleção" quando já há uma escolha. nota: uma linha de texto embaixo da roda.
+function abrirRoda({titulo, opcoes, atual, escolher, obrigatorio = false, limpar = true, nota = ''}){
   const bg = document.createElement('div');
   bg.className = 'sheet-bg';
   bg.innerHTML = `<div class="sheet" role="dialog" aria-label="${titulo}">
-    <div class="sheet-top"><button class="sheet-btn" data-x>Cancelar</button><div class="sheet-title">${titulo}</div><button class="sheet-btn ok" data-ok>Confirmar</button></div>
+    <div class="sheet-top"><button class="sheet-btn" data-x${obrigatorio ? ' tabindex="-1" aria-hidden="true" style="visibility:hidden"' : ''}>Cancelar</button><div class="sheet-title">${titulo}</div><button class="sheet-btn ok" data-ok>Confirmar</button></div>
     <div class="wheel"><div class="band"></div><div class="wheel-scroll">${opcoes.map(o => `<div class="wi">${o.label}</div>`).join('')}</div></div>
-    ${atual ? '<button class="sheet-clear" data-limpar>Remover seleção</button>' : ''}
+    ${atual && limpar ? '<button class="sheet-clear" data-limpar>Remover seleção</button>' : ''}
+    ${nota ? `<p class="sheet-nota">${nota}</p>` : ''}
   </div>`;
   document.body.appendChild(bg);
   const sc = bg.querySelector('.wheel-scroll'), itens = [...sc.children];
@@ -399,7 +430,7 @@ function abrirRoda({titulo, opcoes, atual, escolher}){
   const fecha = () => { bg.classList.remove('on'); setTimeout(() => bg.remove(), 320); };
   sc.addEventListener('scroll', gira, {passive:true});
   itens.forEach((it, i) => it.addEventListener('click', () => sc.scrollTo({top: i * ITEM, behavior:'smooth'})));
-  bg.addEventListener('click', e => { if(e.target === bg) fecha(); });
+  bg.addEventListener('click', e => { if(e.target === bg && !obrigatorio) fecha(); });
   bg.querySelector('[data-x]').onclick = fecha;
   bg.querySelector('[data-ok]').onclick = () => {
     escolher(opcoes[Math.min(Math.round(sc.scrollTop / ITEM), opcoes.length - 1)].v);
@@ -512,12 +543,12 @@ function form(el, j, compacto, onChange){
 
 // ---- teclado numérico próprio: só 0–9, vírgula e apagar ----
 let teclado = null, alvo = null;
+const ICONE_APAGAR = '<svg viewBox="0 0 28 20"><path d="M9 1h15a3 3 0 013 3v12a3 3 0 01-3 3H9L1 10z"/><path d="M14 6.5l7 7M21 6.5l-7 7"/></svg>';   // também no teclado da senha (pedirSenha)
 function criarTeclado(){
   teclado = document.createElement('div');
   teclado.className = 'kp';
-  const apagar = '<svg viewBox="0 0 28 20"><path d="M9 1h15a3 3 0 013 3v12a3 3 0 01-3 3H9L1 10z"/><path d="M14 6.5l7 7M21 6.5l-7 7"/></svg>';
   teclado.innerHTML = `<div class="kp-top"><button class="kp-ok" data-k="ok">Concluir</button></div>
-    <div class="kp-grid">${['1','2','3','4','5','6','7','8','9',',','0','del'].map(k => `<button class="kp-key" data-k="${k}" aria-label="${k==='del'?'Apagar':k}">${k==='del'?apagar:k}</button>`).join('')}</div>`;
+    <div class="kp-grid">${['1','2','3','4','5','6','7','8','9',',','0','del'].map(k => `<button class="kp-key" data-k="${k}" aria-label="${k==='del'?'Apagar':k}">${k==='del'?ICONE_APAGAR:k}</button>`).join('')}</div>`;
   document.body.appendChild(teclado);
   teclado.addEventListener('mousedown', e => e.preventDefault());   // não tira o foco do campo
   teclado.addEventListener('click', e => {
@@ -619,14 +650,17 @@ function atualizaMulti(){
 // ---- preço do ouro ----
 // Lido na hora de avaliar, para um tablet aberto o dia todo pegar o preço novo sem recarregar.
 // Se não der para ler (sem internet, limite da API, preço mal escrito), a avaliação é bloqueada com um aviso.
-// Uma linha por quilate: "24k 550" (também vale "24K: 550" ou "24k = 550,50"); linhas em branco não contam.
-// Precisa ter os 6 quilates, sem repetir e sem nenhuma outra linha. Se algo não bater, nada vale:
-// bloqueia, em vez de avaliar com um preço errado.
+// O arquivo tem um bloco por loja: uma linha com o nome da loja e, embaixo, uma linha por quilate:
+// "24k 550" (também vale "24K: 550" ou "24k = 550,50"); linhas em branco não contam.
+// Cada bloco precisa ter os 6 quilates, sem repetir. Se o bloco de uma loja não bater, essa loja fica sem preço
+// e bloqueia, em vez de avaliar com um preço errado; as outras lojas continuam valendo.
+const LINHA_QUILATE = /^(\d{1,2})\s*k\s*[:=]?\s*(\S+)$/i;
+// A tabela de um bloco, {'Ouro 24k': 550, …}, ou null se faltar, repetir ou sobrar alguma linha.
 function tabelaPrecos(texto){
   const tabela = {};
   for(const linha of texto.split(/\r?\n/)){
     if(linha.trim() === '') continue;
-    const m = linha.trim().match(/^(\d{1,2})\s*k\s*[:=]?\s*(\S+)$/i);
+    const m = linha.trim().match(LINHA_QUILATE);
     if(!m) return null;
     const material = `Ouro ${parseInt(m[1])}k`;
     const preco = parsePeso(m[2]);   // mesmo formato do peso: até 4 dígitos, vírgula ou ponto, até 2 casas
@@ -635,10 +669,32 @@ function tabelaPrecos(texto){
   }
   return QUILATES.every(q => q in tabela) ? tabela : null;
 }
+// Nome de loja para comparar com o cabeçalho: sem acento, sem diferenciar maiúsculas, sem espaços extras e sem ":" no fim.
+const normalizaNome = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s*:$/, '').replace(/\s+/g, ' ').trim();
+// Separa o arquivo em blocos e valida cada um: {'1': tabela, '2': null, …}.
+// Linha de quilate antes do primeiro cabeçalho não conta. Qualquer outra linha fecha o bloco: o que vem
+// depois dela não vale para nenhuma loja até o próximo cabeçalho. Cabeçalho repetido deixa a loja sem preço.
+function tabelasPorLoja(texto){
+  const blocos = {};   // id da loja -> linhas do bloco; null se o cabeçalho se repetiu
+  let atual = null;    // linhas do bloco aberto
+  for(const linha of texto.split(/\r?\n/)){
+    const t = linha.trim();
+    if(t === '') continue;
+    if(LINHA_QUILATE.test(t)){ if(atual) atual.push(t); continue; }
+    const loja = LOJAS.find(l => normalizaNome(l.nome) === normalizaNome(t));
+    atual = null;
+    if(!loja) continue;
+    if(loja.id in blocos){ blocos[loja.id] = null; continue; }
+    atual = blocos[loja.id] = [];
+  }
+  return Object.fromEntries(LOJAS.map(l => [l.id, blocos[l.id] ? tabelaPrecos(blocos[l.id].join('\n')) : null]));
+}
 
-let precosLidos = null;   // {tabela, em}: a última leitura que deu certo
-async function lerPrecos(){
-  if(precosLidos && Date.now() - precosLidos.em < PRECO_REUSO) return precosLidos.tabela;
+let precosLidos = null;   // {lojas, em}: a última leitura do arquivo, já separada por loja
+// A tabela da loja `id`. Reaproveita a última leitura por 60 s se ela tiver a tabela dessa loja; se não tiver
+// (bloco errado), lê de novo, para o "Tentar de novo" pegar o arquivo corrigido.
+async function lerPrecos(id){
+  if(precosLidos && Date.now() - precosLidos.em < PRECO_REUSO && precosLidos.lojas[id]) return precosLidos.lojas[id];
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), PRECO_ESPERA);
   let r, texto;
@@ -662,19 +718,19 @@ async function lerPrecos(){
     console.error('Preço: resposta', r.status, 'de', PRECO_URL);
     throw {motivo: 'conexao'};
   }
-  const tabela = tabelaPrecos(texto);
-  if(tabela === null){
-    console.error('Preço: conteúdo inválido em', PRECO_URL, JSON.stringify(texto.slice(0, 200)));
+  precosLidos = {lojas: tabelasPorLoja(texto), em: Date.now()};
+  const tabela = precosLidos.lojas[id];
+  if(!tabela){
+    console.error(`Preço: o bloco da loja ${id} está inválido ou faltando em`, PRECO_URL, JSON.stringify(texto.slice(0, 400)));
     throw {motivo: 'invalido'};
   }
-  precosLidos = {tabela, em: Date.now()};
   return tabela;
 }
 
 const AVISOS = {
   conexao:  {titulo: 'Sistema fora do ar', texto: () => 'Não foi possível consultar o preço do ouro. Confira a internet e tente de novo.'},
   limite:   {titulo: 'Limite de consultas atingido', texto: min => `Esta internet passou do limite de consultas por hora. Tente de novo ${min ? `em ${min} min` : 'daqui a pouco'} ou use outra internet, como outro Wi-Fi ou os dados do celular.`},
-  invalido: {titulo: 'Preço do ouro inválido', texto: () => 'Os preços cadastrados não estão no formato que o sistema entende. Avise o responsável.'},
+  invalido: {titulo: 'Preço do ouro inválido', texto: () => 'Os preços desta loja não estão no formato que o sistema entende. Avise o responsável.'},
 };
 // Aviso de bloqueio, na mesma folha de baixo para cima da roda de seleção (abrirRoda).
 function avisar(motivo, minutos, tentar){
@@ -693,17 +749,132 @@ function avisar(motivo, minutos, tentar){
   void bg.offsetHeight;   // aplica o estado inicial antes de animar (na roda, o scrollTop já fazia isso)
   requestAnimationFrame(() => bg.classList.add('on'));
 }
+// Folha só com um recado e "OK" (a confirmação da troca de loja), no mesmo padrão de avisar().
+function mensagem(titulo, html){
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  // o "OK" escondido à esquerda só equilibra o título no meio (no celular, vai para o lugar do "Fechar" do aviso)
+  bg.innerHTML = `<div class="sheet" role="alertdialog" aria-label="${titulo}">
+    <div class="sheet-top"><button class="sheet-btn" data-x tabindex="-1" aria-hidden="true" style="visibility:hidden">OK</button><div class="sheet-title">${titulo}</div><button class="sheet-btn ok" data-ok>OK</button></div>
+    <p class="sheet-msg">${html}</p>
+  </div>`;
+  document.body.appendChild(bg);
+  const fecha = () => { bg.classList.remove('on'); setTimeout(() => bg.remove(), 320); };
+  bg.addEventListener('click', e => { if(e.target === bg) fecha(); });
+  bg.querySelector('[data-ok]').onclick = fecha;
+  void bg.offsetHeight;
+  requestAnimationFrame(() => bg.classList.add('on'));
+}
+
+// ---- loja do aparelho ----
+// Cada aparelho fica numa loja e usa o bloco dela no arquivo de preços. A loja fica salva no localStorage.
+// Na primeira vez, vem do link (?loja=2) ou de uma escolha obrigatória, sem senha. Depois, a salva vale mais
+// que o link, e trocar exige a senha: 5 toques no logo da tela inicial abrem a troca. Nenhuma tela mostra a loja;
+// o nome só aparece nas folhas de troca. A URL não é reescrita.
+let loja = null;   // a loja em memória, para quando o navegador não deixa gravar
+const lojaValida = id => LOJAS.some(l => l.id === id) ? id : null;
+const nomeDaLoja = id => LOJAS.find(l => l.id === id)?.nome || '';
+function lojaSalva(){
+  try { return lojaValida(localStorage.getItem(LOJA_CHAVE)); } catch(e) { return null; }
+}
+const lojaDoLink = () => lojaValida(new URLSearchParams(location.search).get('loja'));
+// Relê o armazenamento a cada uso: no Android, cada toque no atalho pode abrir outra aba, e uma aba antiga
+// ficaria com a loja velha na memória.
+const lojaAtual = () => lojaSalva() || loja;
+function salvarLoja(id){
+  loja = id;
+  try { localStorage.setItem(LOJA_CHAVE, id); } catch(e) { console.error('Loja: não deu para salvar no aparelho; vale até fechar.', e); }
+}
+// Escolha da loja na roda do "Outro": "Confirmar" evita que um toque errado já salve a loja.
+// obrigatoria: a primeira vez, sem "Cancelar"; senão, é a troca, que já passou pela senha.
+function escolherLoja({obrigatoria}){
+  const antes = lojaAtual();
+  abrirRoda({
+    titulo: obrigatoria ? 'Escolha a loja' : 'Mudar de loja',
+    opcoes: LOJAS.map(l => ({v: l.id, label: l.nome})),
+    atual: antes,
+    obrigatorio: obrigatoria,
+    limpar: false,
+    nota: obrigatoria ? 'Em qual loja fica este aparelho? Para trocar depois, só com a senha.' : '',
+    escolher: id => {
+      salvarLoja(id);
+      if(obrigatoria) return;
+      // espera a roda sair antes de abrir a confirmação
+      setTimeout(() => id === antes
+        ? mensagem('Loja mantida', `Este aparelho continua na <b>${nomeDaLoja(id)}</b>.`)
+        : mensagem('Loja alterada', `Este aparelho agora está na <b>${nomeDaLoja(id)}</b>.`), 320);
+    },
+  });
+}
+// Embaralha a senha (cyrb53, 53 bits): o código guarda só o resultado, então quem lê o repositório não vê a senha.
+// Não é segurança de verdade (quem souber usar o console troca a loja direto no localStorage); só evita a troca no balcão.
+// Não usa crypto.subtle porque ele não existe fora de https e localhost (o iPad testa pela rede, em http).
+function embaralha(txt){
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for(let i = 0; i < txt.length; i++){
+    const c = txt.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 2654435761);
+    h2 = Math.imul(h2 ^ c, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+// Senha da troca de loja: 10 dígitos num teclado próprio dentro da folha. Sem campo de texto, o teclado do
+// sistema não abre: não cobre a folha, a tela não pula e o aparelho não oferece "Salvar senha".
+// Confere no último dígito; certa, fecha e chama depois(). No computador, as teclas de número também valem.
+function pedirSenha(depois){
+  const id = lojaAtual();
+  const bg = document.createElement('div');
+  bg.className = 'sheet-bg';
+  bg.innerHTML = `<div class="sheet pin" role="dialog" aria-label="Mudar de loja">
+    <div class="sheet-top"><button class="sheet-btn" data-x>Cancelar</button><div class="sheet-title">Mudar de loja</div><button class="sheet-btn" tabindex="-1" aria-hidden="true" style="visibility:hidden">Cancelar</button></div>
+    <p class="sheet-msg">${id ? `Este aparelho está na <b>${nomeDaLoja(id)}</b>.` : 'Este aparelho ainda não tem loja.'} Digite a senha para trocar.</p>
+    <div class="pin-pontos">${'<i></i>'.repeat(SENHA_DIGITOS)}</div>
+    <p class="pin-msg" aria-live="polite"></p>
+    <div class="kp-grid">${['1','2','3','4','5','6','7','8','9','','0','del'].map(k => k === '' ? '<span></span>' : `<button class="kp-key" data-d="${k}" aria-label="${k==='del'?'Apagar':k}">${k==='del'?ICONE_APAGAR:k}</button>`).join('')}</div>
+  </div>`;
+  document.body.appendChild(bg);
+  const pontos = [...bg.querySelectorAll('.pin-pontos i')], msg = bg.querySelector('.pin-msg');
+  let digitada = '';
+  const fecha = () => { document.removeEventListener('keydown', tecla); bg.classList.remove('on'); setTimeout(() => bg.remove(), 320); };
+  const digita = k => {
+    msg.textContent = '';
+    digitada = k === 'del' ? digitada.slice(0, -1) : (digitada + k).slice(0, SENHA_DIGITOS);
+    pontos.forEach((p, i) => p.classList.toggle('on', i < digitada.length));
+    if(digitada.length < SENHA_DIGITOS) return;
+    if(embaralha(digitada) === SENHA_LOJA){ fecha(); setTimeout(depois, 320); return; }   // espera esta folha sair
+    digitada = '';
+    pontos.forEach(p => p.classList.remove('on'));
+    msg.textContent = 'Senha incorreta.';
+  };
+  const tecla = e => {
+    if(/^\d$/.test(e.key)) digita(e.key);
+    else if(e.key === 'Backspace') digita('del');
+    else if(e.key === 'Escape') fecha();
+  };
+  document.addEventListener('keydown', tecla);
+  bg.addEventListener('click', e => { if(e.target === bg) fecha(); });
+  bg.querySelector('[data-x]').onclick = fecha;
+  bg.querySelector('.kp-grid').addEventListener('click', e => { const b = e.target.closest('[data-d]'); if(b) digita(b.dataset.d); });
+  void bg.offsetHeight;
+  requestAnimationFrame(() => bg.classList.add('on'));
+}
 
 // Botões "Avaliar": buscam o preço e só então avaliam. A trava evita duas consultas num toque duplo.
 let consultando = false;
 async function pedirAvaliacao(joias, botao){
   if(consultando) return;
+  const id = lojaAtual();
+  if(!id) return escolherLoja({obrigatoria: true});   // sem loja não há preço (a abertura já pergunta; isto é só por segurança)
   consultando = true;
   botao.classList.add('consultando');
   document.documentElement.classList.add('consultando');   // trava a tela: o formulário não muda no meio da espera
   let precos;
   try {
-    precos = await lerPrecos();
+    precos = await lerPrecos(id);
   } catch(e) {
     if(!e.motivo) console.error(e);
     avisar(e.motivo, e.minutos, () => pedirAvaliacao(joias, botao));
@@ -758,8 +929,26 @@ $('to-single').addEventListener('click', () => {
 $('single-go').addEventListener('click', () => pedirAvaliacao([single], $('single-go')));
 $('multi-go').addEventListener('click', () => pedirAvaliacao(multi, $('multi-go')));
 $('restart').addEventListener('click', () => { single = novaJoia(); multi = []; renderSingle(); show('v-single'); });
+// 5 toques seguidos no logo da tela inicial (até 700 ms entre um e outro) abrem a troca de loja.
+// Nada na tela indica o gesto: é para Lukas, não para o balcão.
+{
+  let toques = 0, ultimo = 0;
+  document.querySelector('#v-single .logo-img').addEventListener('click', () => {
+    const agora = Date.now();
+    toques = agora - ultimo <= 700 ? toques + 1 : 1;
+    ultimo = agora;
+    if(toques < 5) return;
+    toques = 0;
+    fecharTeclado();
+    pedirSenha(() => escolherLoja({obrigatoria: false}));
+  });
+}
 
 renderSingle();
+// Loja do aparelho: a salva; senão, a do link (e salva); senão, pergunta, sem senha.
+if(lojaSalva()) loja = lojaSalva();
+else if(lojaDoLink()) salvarLoja(lojaDoLink());
+else escolherLoja({obrigatoria: true});
 </script>
 </body>
 </html>
