@@ -369,10 +369,11 @@ const QUILATES = [...MATERIAIS, ...OUTROS_MATERIAL];
 // de preços e só aparece nas folhas de troca de loja. Renomear: mudar aqui e no arquivo, no mesmo commit.
 const LOJAS = [{id:'1', nome:'Loja ZN'}, {id:'2', nome:'Loja CTC'}, {id:'3', nome:'Loja Nova Parnamirim'}];
 const LOJA_CHAVE = 'vdj-loja';   // chave no localStorage
-// Senha para trocar a loja do aparelho: 10 dígitos, guardada embaralhada (embaralha), para não ficar legível no código.
-// Para trocar a senha: no console da página, embaralha('nova senha'), e pôr o resultado aqui.
-const SENHA_LOJA = '1xsleyanyvb';
-const SENHA_DIGITOS = 10;
+// Senha para trocar a loja do aparelho: 4 dígitos, guardada embaralhada (embaralha), para não ficar legível no código.
+// Para trocar a senha: no console da página, embaralha('nova senha'), e pôr o resultado aqui. Se o tamanho mudar,
+// SENHA_DIGITOS muda junto.
+const SENHA_LOJA = '1350gl71src';
+const SENHA_DIGITOS = 4;
 const TIPOS = [
   ['Anel','<circle cx="18" cy="21" r="10"/><path d="M13 9l5-5 5 5-5 3z"/>'],
   ['Colar','<path d="M6 6c0 14 6 20 12 20s12-6 12-20"/><circle cx="18" cy="29" r="3"/>'],
@@ -809,7 +810,8 @@ function escolherLoja({obrigatoria}){
     },
   });
 }
-// Embaralha a senha (cyrb53, 53 bits): o código guarda só o resultado, então quem lê o repositório não vê a senha.
+// Embaralha a senha (cyrb53, 53 bits): o código guarda só o resultado, para a senha não ficar legível no repositório.
+// Com 4 dígitos, quem testar as 10 mil combinações nesta função acha a senha em milissegundos.
 // Não é segurança de verdade (quem souber usar o console troca a loja direto no localStorage); só evita a troca no balcão.
 // Não usa crypto.subtle porque ele não existe fora de https e localhost (o iPad testa pela rede, em http).
 function embaralha(txt){
@@ -825,7 +827,7 @@ function embaralha(txt){
   h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
-// Senha da troca de loja: 10 dígitos num teclado próprio dentro da folha. Sem campo de texto, o teclado do
+// Senha da troca de loja: 4 dígitos num teclado próprio dentro da folha. Sem campo de texto, o teclado do
 // sistema não abre: não cobre a folha, a tela não pula e o aparelho não oferece "Salvar senha".
 // Confere no último dígito; certa, fecha e chama depois(). No computador, as teclas de número também valem.
 function pedirSenha(depois){
