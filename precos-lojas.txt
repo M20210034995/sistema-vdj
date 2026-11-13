@@ -9,7 +9,7 @@ Loja ZN
 Loja CTC
 24k 500
 22k 450
-18k 330
+18k 310
 16k 130
 14k 110
 10k 70
@@ -17,7 +17,7 @@ Loja CTC
 Loja Nova Parnamirim
 24k 500
 22k 405
-18k 330
+18k 310
 16k 130
 14k 110
 10k 70
