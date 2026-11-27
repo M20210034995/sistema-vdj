@@ -1,0 +1,37 @@
+{
+  "name": "sistema-vdj",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Sistema de gestão da Valor da Joia (Vite + React + TypeScript), com dados de exemplo enquanto o back não existe",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:rede": "vite --host",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint --deny-warnings",
+    "preview": "vite preview",
+    "test:fumaca": "playwright test fumaca paridade",
+    "test:axe": "playwright test axe",
+    "capturas": "playwright test capturas"
+  },
+  "dependencies": {
+    "lucide-react": "^1.81.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router": "^8.5.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "oxlint": "^1.95.0",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.8"
+  }
+}

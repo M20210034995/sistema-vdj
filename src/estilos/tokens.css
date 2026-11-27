@@ -1,0 +1,99 @@
+/*
+ * Tokens dos dois temas. CLARO = o visual do avaliador de hoje (padrão). ESCURO = neutros quase pretos, como no
+ * modelo de estrutura usado como referência, com o dourado da VDJ. Só cores: nada de fonte, ícone ou texto de lá.
+ * Os nomes antigos (--fundo, --superficie, --linha, --texto2, --ouro…) continuam com o mesmo sentido.
+ */
+:root,
+[data-tema='claro'] {
+  color-scheme: light;
+  --fundo: #f3f1ec;
+  --superficie: #f9f8f5;
+  --superficie-2: #ffffff;
+  --sel-fundo: #ffffff;
+  --linha: #e4e2dd;
+  --linha-forte: #cfcac0;
+  --texto: #0e0e0e;
+  --texto-forte: #333333;
+  --texto2: #6b6b6b;
+  --ouro: #d9ae48;
+  --ouro-claro: #f3e3b5;
+  --ouro-escuro: #b8862a;
+  /* dourado para TEXTO sobre fundo claro: 4,7:1 no --fundo (o #B8862A dava 2,9:1) */
+  --ouro-texto: #86621a;
+  --sobre-ouro: #0e0e0e;
+  --botao: #0e0e0e;
+  --botao-texto: #ffffff;
+  --botao-g: #d9ae48;
+  --erro: #a3412e;
+  --placeholder: #d6d2ca;
+  --add-borda: #c9c5bc;
+  --pbar: #e4dfd3;
+  --overlay: rgba(14, 14, 14, 0.35);
+  --foco: #86621a;
+  --tag-sucesso-fundo: #e2efe0;
+  --tag-sucesso-texto: #245a2e;
+  --tag-aviso-fundo: #f6e9c8;
+  --tag-aviso-texto: #6b4800;
+  --tag-info-fundo: #e1eaf4;
+  --tag-info-texto: #22476f;
+  --tag-perigo-fundo: #f5ded8;
+  --tag-perigo-texto: #872e1e;
+  --tag-neutra-fundo: #e9e6df;
+  --tag-neutra-texto: #444444;
+  --grafico-1: #b8862a;
+  --grafico-2: #3f6f8f;
+  --grafico-3: #6b8e4e;
+  --grafico-4: #8f5b3f;
+  --grafico-5: #7a6a9a;
+  --sombra-1: 0 1px 2px rgba(30, 25, 15, 0.06), 0 2px 6px rgba(30, 25, 15, 0.05);
+  --sombra-2: 0 2px 4px rgba(30, 25, 15, 0.08), 0 10px 24px rgba(30, 25, 15, 0.12);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --num: -apple-system, 'SF Pro Display', BlinkMacSystemFont, 'Inter', sans-serif;
+  --topo: 64px;
+  --raio: 12px;
+}
+
+[data-tema='escuro'] {
+  color-scheme: dark;
+  --fundo: #0a0a0a;
+  --superficie: #111111;
+  --superficie-2: #161616;
+  --sel-fundo: #1a1a1a;
+  --linha: #2a2a2a;
+  --linha-forte: #3f3f46;
+  --texto: #ffffff;
+  --texto-forte: #e4e4e7;
+  --texto2: #a1a1aa;
+  --ouro: #d9ae48;
+  --ouro-claro: #3a2f14;
+  --ouro-escuro: #d9ae48;
+  --ouro-texto: #d9ae48;
+  --sobre-ouro: #0a0a0a;
+  --botao: #d9ae48;
+  --botao-texto: #0a0a0a;
+  --botao-g: #0a0a0a;
+  --erro: #f87171;
+  --placeholder: #52525b;
+  --add-borda: #3f3f46;
+  --pbar: #2a2a2a;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --foco: #d9ae48;
+  --tag-sucesso-fundo: rgba(34, 197, 94, 0.16);
+  --tag-sucesso-texto: #86efac;
+  --tag-aviso-fundo: rgba(217, 174, 72, 0.16);
+  --tag-aviso-texto: #fcd34d;
+  --tag-info-fundo: rgba(14, 165, 233, 0.16);
+  --tag-info-texto: #7dd3fc;
+  --tag-perigo-fundo: rgba(239, 68, 68, 0.16);
+  --tag-perigo-texto: #fca5a5;
+  --tag-neutra-fundo: #27272a;
+  --tag-neutra-texto: #d4d4d8;
+  --grafico-1: #d9ae48;
+  --grafico-2: #7dd3fc;
+  --grafico-3: #86efac;
+  --grafico-4: #fca5a5;
+  --grafico-5: #c4b5fd;
+  --sombra-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --sombra-2: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

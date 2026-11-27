@@ -1,0 +1,1185 @@
+/*
+ * Estilos do sistema (casca, componentes e telas de gestão). Classes com prefixo g- para não colidir com as do
+ * avaliador (src/avaliador/avaliador.css), que seguem os nomes antigos.
+ * Larguras: ≥1180 menu lateral; 744–1179 (iPad em pé) trilho de ícones; <744 gaveta e cartões.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--sans);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  font-size: 15px;
+  line-height: 1.5;
+}
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+a {
+  color: var(--ouro-texto);
+}
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+.g-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.g-pular {
+  position: fixed;
+  left: 12px;
+  top: -60px;
+  z-index: 100;
+  background: var(--botao);
+  color: var(--botao-texto);
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.g-pular:focus {
+  top: 12px;
+}
+.g-num {
+  font-family: var(--num);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- casca ---------- */
+.g-topo {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: calc(var(--topo) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: color-mix(in srgb, var(--fundo) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--linha);
+  z-index: 30;
+}
+.g-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--texto);
+  min-width: 0;
+}
+.g-marca img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+.g-selo {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--tag-aviso-fundo);
+  color: var(--tag-aviso-texto);
+  white-space: nowrap;
+}
+.g-topo-espaco {
+  flex: 1;
+}
+.g-topo-loja {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--texto2);
+}
+/* No Avaliar: a loja do aparelho (de onde vêm os preços) no lugar da "Loja atual". */
+.g-topo-aparelho {
+  font-size: 14px;
+  color: var(--texto2);
+  white-space: nowrap;
+}
+.g-pop-vazio {
+  padding: 8px 10px;
+}
+.g-topo-loja select {
+  height: 40px;
+  border: 1px solid var(--linha);
+  border-radius: 8px;
+  background: var(--superficie);
+  padding: 0 10px;
+  color: var(--texto);
+}
+.g-btn-icone {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--linha);
+  background: var(--superficie);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.g-btn-icone svg {
+  width: 20px;
+  height: 20px;
+}
+.g-contador {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--erro);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-tema='escuro'] .g-contador {
+  color: #0a0a0a;
+}
+.g-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ouro);
+  color: var(--sobre-ouro);
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.g-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 260px;
+  background: var(--superficie-2);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-2);
+  padding: 8px;
+  z-index: 40;
+}
+.g-pop-cab {
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--linha);
+  margin-bottom: 6px;
+}
+.g-pop-cab strong {
+  display: block;
+}
+.g-pop a,
+.g-pop button.g-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  color: var(--texto);
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 44px;
+}
+.g-pop a:hover,
+.g-pop button.g-pop-item:hover {
+  background: var(--superficie);
+}
+.g-ancora {
+  position: relative;
+}
+
+.g-nav {
+  position: fixed;
+  top: calc(var(--topo) + env(safe-area-inset-top));
+  bottom: 0;
+  left: 0;
+  width: 240px;
+  background: var(--superficie);
+  border-right: 1px solid var(--linha);
+  padding: 16px 12px;
+  overflow-y: auto;
+  z-index: 25;
+  transition: transform 0.25s ease;
+}
+.g-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.g-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  color: var(--texto2);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+.g-nav a:hover {
+  color: var(--texto);
+  background: var(--superficie-2);
+}
+.g-nav a[aria-current='page'] {
+  color: var(--ouro-texto);
+  border-left-color: var(--ouro);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ouro) 16%, transparent), transparent);
+  font-weight: 600;
+}
+.g-nav svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.g-veu {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 24;
+}
+.g-principal {
+  padding: calc(var(--topo) + env(safe-area-inset-top) + 24px) 32px 48px calc(240px + 32px);
+  min-height: 100dvh;
+}
+.g-principal:focus {
+  outline: none;
+}
+.g-btn-menu {
+  display: none;
+}
+/* Avaliar (modo balcão): a tela inteira para o avaliador, o menu vira gaveta em qualquer largura. */
+.g-casca.balcao .g-principal {
+  padding: calc(var(--topo) + env(safe-area-inset-top)) 0 0;
+}
+.g-casca.balcao .g-btn-menu {
+  display: inline-flex;
+}
+.g-casca.balcao .g-nav {
+  transform: translateX(-100%);
+  width: 260px;
+}
+.g-casca.balcao .g-nav[data-aberto='true'] {
+  transform: none;
+  box-shadow: var(--sombra-2);
+}
+
+@media (max-width: 1179.98px) {
+  .g-nav {
+    width: 96px;
+    padding: 12px 8px;
+  }
+  .g-nav a {
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 4px;
+    font-size: 12px;
+    text-align: center;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  .g-nav a[aria-current='page'] {
+    border-bottom-color: var(--ouro);
+    background: color-mix(in srgb, var(--ouro) 14%, transparent);
+  }
+  .g-principal {
+    padding-left: calc(96px + 24px);
+    padding-right: 24px;
+  }
+  .g-casca.balcao .g-nav a {
+    flex-direction: row;
+    font-size: 14px;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+  }
+  .g-casca.balcao .g-nav a[aria-current='page'] {
+    border-left-color: var(--ouro);
+  }
+}
+@media (max-width: 743.98px) {
+  .g-btn-menu {
+    display: inline-flex;
+  }
+  .g-nav,
+  .g-casca.balcao .g-nav {
+    width: 260px;
+    transform: translateX(-100%);
+  }
+  .g-nav[data-aberto='true'] {
+    transform: none;
+    box-shadow: var(--sombra-2);
+  }
+  .g-nav a,
+  .g-casca.balcao .g-nav a {
+    flex-direction: row;
+    font-size: 14px;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: none;
+  }
+  .g-principal {
+    padding: calc(var(--topo) + env(safe-area-inset-top) + 16px) 16px 40px;
+    overflow-x: clip;
+  }
+  .g-marca-nome,
+  .g-topo-loja-rotulo {
+    display: none;
+  }
+  .g-topo {
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 6px;
+  }
+  .g-selo {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+  .g-topo-loja select {
+    max-width: 120px;
+  }
+  /* no Avaliar, o selo sai do celular para caber a loja do aparelho (o Avaliar usa os preços reais) */
+  .g-casca.balcao .g-selo {
+    display: none;
+  }
+  .g-topo-aparelho {
+    max-width: 200px;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: right;
+    white-space: normal;
+  }
+}
+
+/* ---------- página ---------- */
+.g-pagina {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.g-cab {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.g-cab h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+.g-cab p {
+  color: var(--texto2);
+  margin-top: 4px;
+}
+.g-cab-acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.g-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--texto2);
+  text-decoration: none;
+  font-size: 14px;
+  min-height: 44px;
+}
+.g-cartao {
+  background: var(--superficie);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio);
+  padding: 20px;
+  box-shadow: var(--sombra-1);
+  min-width: 0;
+}
+.g-cartao > h2,
+.g-cartao-cab h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.g-cartao-cab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.g-cartao > h2 {
+  margin-bottom: 14px;
+}
+.g-secao-desc {
+  color: var(--texto2);
+  font-size: 14px;
+  margin: -8px 0 14px;
+}
+.g-grade {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(var(--colunas, 3), minmax(0, 1fr));
+}
+.g-grade-2 {
+  --colunas: 2;
+}
+.g-grade-4 {
+  --colunas: 4;
+}
+.g-detalhe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+.g-detalhe > div {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+@media (max-width: 1179.98px) {
+  .g-detalhe {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .g-grade-4 {
+    --colunas: 2;
+  }
+}
+@media (max-width: 743.98px) {
+  .g-grade,
+  .g-grade-2,
+  .g-grade-4 {
+    --colunas: 1;
+  }
+  .g-cab h1 {
+    font-size: 24px;
+  }
+  .g-cartao {
+    padding: 16px;
+  }
+}
+.g-kpi-rotulo {
+  font-size: 14px;
+  color: var(--texto2);
+}
+.g-kpi-valor {
+  font-family: var(--num);
+  font-variant-numeric: tabular-nums;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.g-kpi-nota {
+  font-size: 13px;
+  color: var(--texto2);
+}
+.g-resumo-frase {
+  font-size: 17px;
+}
+.g-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px 20px;
+  margin: 0;
+}
+.g-dl dt {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto2);
+}
+.g-dl dd {
+  margin: 2px 0 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- botões ---------- */
+.g-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  border: 1px solid var(--linha-forte);
+  background: var(--superficie-2);
+  color: var(--texto);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.g-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.g-btn-primario {
+  background: var(--botao);
+  border-color: var(--botao);
+  color: var(--botao-texto);
+}
+.g-btn-perigo {
+  color: var(--erro);
+  border-color: currentColor;
+  background: transparent;
+}
+.g-btn-fantasma {
+  background: transparent;
+  border-color: transparent;
+}
+.g-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.g-link-botao {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ouro-texto);
+  text-decoration: underline;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+/* ---------- segmentado (período, status) ---------- */
+.g-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+.g-segmentado {
+  display: flex;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  background: var(--superficie);
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: thin;
+}
+.g-segmentado button {
+  border: none;
+  border-right: 1px solid var(--linha);
+  background: none;
+  padding: 0 14px;
+  min-height: 44px;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--texto2);
+  font-weight: 500;
+}
+.g-segmentado button:last-child {
+  border-right: none;
+}
+.g-segmentado button[aria-pressed='true'] {
+  background: var(--botao);
+  color: var(--botao-texto);
+}
+.g-rotulo-filtro {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texto2);
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* ---------- campos ---------- */
+.g-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.g-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px 16px;
+}
+.g-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.g-campo label,
+.g-campo legend {
+  font-size: 14px;
+  font-weight: 600;
+}
+.g-campo .g-obrig {
+  color: var(--erro);
+}
+.g-input,
+.g-select,
+.g-textarea {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 8px;
+  background: var(--superficie-2);
+  padding: 8px 12px;
+  font-size: 16px;
+}
+.g-textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+.g-input[aria-invalid='true'],
+.g-select[aria-invalid='true'] {
+  border-color: var(--erro);
+  border-width: 2px;
+}
+.g-ajuda {
+  font-size: 13px;
+  color: var(--texto2);
+}
+.g-erro {
+  font-size: 13px;
+  color: var(--erro);
+  font-weight: 500;
+}
+.g-busca {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+.g-busca svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--texto2);
+}
+.g-busca .g-input {
+  padding-left: 38px;
+}
+.g-opcoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.g-opcoes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.g-opcoes input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ouro-texto);
+}
+.g-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.g-check input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ouro-texto);
+}
+
+/* ---------- avisos ---------- */
+.g-aviso {
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.g-aviso:focus {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+.g-aviso svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.g-aviso-info {
+  background: var(--tag-info-fundo);
+  color: var(--tag-info-texto);
+}
+.g-aviso-erro {
+  background: var(--tag-perigo-fundo);
+  color: var(--tag-perigo-texto);
+}
+.g-aviso-sucesso {
+  background: var(--tag-sucesso-fundo);
+  color: var(--tag-sucesso-texto);
+}
+.g-aviso-atencao {
+  background: var(--tag-aviso-fundo);
+  color: var(--tag-aviso-texto);
+}
+.g-lista-faltas {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+/* ---------- tags ---------- */
+.g-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--tag-neutra-fundo);
+  color: var(--tag-neutra-texto);
+}
+.g-tag-sucesso {
+  background: var(--tag-sucesso-fundo);
+  color: var(--tag-sucesso-texto);
+}
+.g-tag-aviso {
+  background: var(--tag-aviso-fundo);
+  color: var(--tag-aviso-texto);
+}
+.g-tag-info {
+  background: var(--tag-info-fundo);
+  color: var(--tag-info-texto);
+}
+.g-tag-perigo {
+  background: var(--tag-perigo-fundo);
+  color: var(--tag-perigo-texto);
+}
+.g-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ---------- tabelas e listas ---------- */
+.g-tabela-rolagem {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.g-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.g-tabela caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 8px;
+}
+.g-tabela th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--texto2);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--linha);
+  white-space: nowrap;
+}
+.g-tabela td {
+  padding: 12px;
+  border-bottom: 1px solid var(--linha);
+  vertical-align: top;
+}
+.g-tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+.g-tabela .g-direita {
+  text-align: right;
+  white-space: nowrap;
+}
+.g-tabela tfoot td {
+  font-weight: 700;
+  border-top: 2px solid var(--linha);
+}
+.g-linha-link {
+  cursor: pointer;
+}
+/* Resultado de venda com compras de outra loja: pode quebrar a linha para a tabela caber no iPad. */
+.g-so-admin {
+  color: var(--texto2);
+  white-space: normal;
+}
+.g-linha-link:hover td {
+  background: var(--superficie-2);
+}
+.g-celula-2 {
+  display: block;
+  font-size: 13px;
+  color: var(--texto2);
+}
+@media (max-width: 1179.98px) {
+  .g-p2 {
+    display: none;
+  }
+}
+.g-cartoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.g-cartoes li > a,
+.g-cartoes li > div {
+  display: block;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  background: var(--superficie-2);
+  color: var(--texto);
+  text-decoration: none;
+}
+.g-cartoes dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+.g-cartoes dt {
+  color: var(--texto2);
+}
+.g-cartoes dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.g-cartao-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 600;
+}
+.g-vazio {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--texto2);
+}
+.g-vazio strong {
+  display: block;
+  color: var(--texto);
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.g-paginador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--texto2);
+}
+.g-paginador-botoes {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* ---------- gráficos ---------- */
+.g-figura {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.g-figura figcaption {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--texto2);
+}
+@media (max-width: 1179.98px) {
+  .g-figura {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.g-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.g-barra-linha {
+  display: grid;
+  grid-template-columns: minmax(90px, 160px) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+.g-barra-nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.g-barra-trilho {
+  display: flex;
+  height: 22px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--linha);
+}
+.g-barra-trilho span {
+  display: block;
+  height: 100%;
+}
+.g-legenda {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--texto2);
+  margin-bottom: 10px;
+}
+.g-legenda i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.g-grafico-svg {
+  width: 100%;
+  height: 200px;
+  display: block;
+}
+.g-grafico-svg text {
+  fill: var(--texto2);
+  font-size: 11px;
+}
+
+/* ---------- etapas ---------- */
+.g-etapas {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.g-etapas li {
+  flex: 1;
+  min-width: 72px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--texto2);
+  padding-top: 10px;
+  border-top: 4px solid var(--linha);
+}
+.g-etapas li.feita {
+  border-top-color: var(--ouro);
+  color: var(--texto);
+}
+.g-etapas li[aria-current='step'] {
+  font-weight: 700;
+  color: var(--ouro-texto);
+}
+
+/* ---------- linha do tempo ---------- */
+.g-tempo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.g-tempo li {
+  border-left: 2px solid var(--linha);
+  padding-left: 14px;
+}
+.g-tempo small {
+  display: block;
+  color: var(--texto2);
+}
+
+/* ---------- diálogo ---------- */
+.g-dialogo-fundo {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 60;
+}
+.g-dialogo {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: var(--superficie-2);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--sombra-2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.g-dialogo h2 {
+  font-size: 20px;
+}
+.g-dialogo-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- entrar ---------- */
+.g-entrar {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+.g-entrar-caixa {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.g-entrar-caixa img {
+  height: 64px;
+  width: auto;
+  align-self: center;
+}
+.g-entrar-caixa h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 36px;
+  text-align: center;
+}
+.g-entrar-teste {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- miudezas ---------- */
+.g-linha-acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.g-separador {
+  border: none;
+  border-top: 1px solid var(--linha);
+  margin: 4px 0;
+}
+.g-texto2 {
+  color: var(--texto2);
+}
+.g-carregando {
+  padding: 24px;
+  color: var(--texto2);
+}
+.g-pecas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.g-peca {
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  padding: 16px;
+  background: var(--superficie-2);
+}
+.g-peca-cab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+.g-peca-cab h3 {
+  font-size: 16px;
+}
+.g-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 700;
+  padding-top: 12px;
+  border-top: 1px solid var(--linha);
+}
+
+/* Tema escuro: o logo tem letras escuras; inverte o claro/escuro e devolve o tom do dourado (hue-rotate). */
+[data-tema='escuro'] .logo-img,
+[data-tema='escuro'] .g-marca img,
+[data-tema='escuro'] .g-entrar-caixa img {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* O h1 recebe o foco ao abrir a tela (para o leitor de tela anunciar a página); não é controle, então sem moldura. */
+h1[tabindex='-1']:focus {
+  outline: none;
+}

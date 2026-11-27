@@ -1,0 +1,180 @@
+/*
+ * Estilos das telas de clientes, envio, equipe, transações, preços, perfil e configurações.
+ * Prefixo t- (as classes g- ficam em app.css). Alvos de toque com 44 px, como no resto do sistema.
+ */
+
+/* grupo de opções (radio) com fieldset + legend, sem a moldura padrão */
+.t-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.t-fieldset legend {
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+/* pilha de cartões dentro de um formulário ou aba */
+.t-pilha {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+.t-pilha[hidden] {
+  display: none;
+}
+
+/* abas (role tablist) */
+.t-abas {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--linha);
+  overflow-x: auto;
+}
+.t-aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: var(--texto2);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.t-aba[aria-selected='true'] {
+  border-bottom-color: var(--ouro-texto);
+  color: var(--texto);
+  font-weight: 700;
+}
+
+/* "Falta: …" do cadastro */
+.t-falta {
+  border: 1px dashed var(--linha-forte);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+/* listas simples dentro de cartões (últimas operações, convites, documentos) */
+.t-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.t-lista li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--linha);
+  min-height: 44px;
+}
+.t-lista li:last-child {
+  border-bottom: none;
+}
+.t-lista a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.t-lista-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* envio: grupos por local e caixas de seleção */
+.t-grupo + .t-grupo {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--linha);
+}
+.t-grupo-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 8px;
+}
+.t-grupo-cab h3 {
+  font-size: 16px;
+}
+.t-sel {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.t-caixa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: -10px 0 -10px -12px;
+  cursor: pointer;
+}
+.t-caixa input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ouro-texto);
+}
+.t-resumo-sel {
+  font-size: 14px;
+  color: var(--texto2);
+}
+
+/* rodapé de total abaixo de uma tabela */
+.t-total {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px solid var(--linha);
+  font-weight: 600;
+}
+
+/* exemplo do formato do precos-lojas.txt */
+.t-codigo {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--superficie-2);
+  border: 1px solid var(--linha);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+  overflow-x: auto;
+}
+.t-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.t-texto ul,
+.t-texto ol {
+  margin: 0;
+  padding-left: 20px;
+}
+.t-link-externo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.t-link-externo svg {
+  width: 16px;
+  height: 16px;
+}
